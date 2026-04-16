@@ -57,6 +57,14 @@ describe("isIndieStory", () => {
     };
     expect(isIndieStory(story)).toBe(false);
   });
+
+  it("does not keep a mainstream story just because it mentions indies", () => {
+    const story = {
+      title: "Oba Femi calls WWE NXT his version of the indies",
+      summary: "A WWE NXT talent compares the brand to the indies.",
+    };
+    expect(isIndieStory(story)).toBe(false);
+  });
 });
 
 describe("filterStories", () => {

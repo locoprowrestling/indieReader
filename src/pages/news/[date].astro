@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import NewsFeed from "../../components/NewsFeed.astro";
 import Tabs from "../../components/Tabs.astro";
+import { withBase } from "../../lib/base";
 import { listNewsDates, loadStoriesForDate } from "../../lib/news";
 
 export function getStaticPaths() {
@@ -10,7 +11,6 @@ export function getStaticPaths() {
 
 const { date } = Astro.params;
 const stories = loadStoriesForDate(date);
-const base = import.meta.env.BASE_URL;
 const today = new Date().toISOString().slice(0, 10);
 const prev = new Date(new Date(`${date}T12:00:00Z`).getTime() - 86_400_000)
   .toISOString()
@@ -34,12 +34,12 @@ const next = new Date(new Date(`${date}T12:00:00Z`).getTime() + 86_400_000)
       })}
     </h2>
     <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
-      <a href={`${base}news/${prev}/`} style="color: var(--muted); text-decoration: none;">Previous</a>
+      <a href={withBase(`/news/${prev}/`)} style="color: var(--muted); text-decoration: none;">Previous</a>
       {date !== today ? (
-        <a href={`${base}news/${next}/`} style="color: var(--muted); text-decoration: none;">Next</a>
+        <a href={withBase(`/news/${next}/`)} style="color: var(--muted); text-decoration: none;">Next</a>
       ) : null}
       {date !== today ? (
-        <a href={base} style="color: var(--accent-alt); text-decoration: none;">Today</a>
+        <a href={withBase("/")} style="color: var(--accent-alt); text-decoration: none;">Today</a>
       ) : null}
     </div>
   </div>
