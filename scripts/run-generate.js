@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { readConfig } from "./config.js";
 import { generatePost } from "./generate-post.js";
+import { readJsonFile } from "./json-file.js";
 import { readState, resetAfterPost, setCarryOver } from "./state.js";
 
 const type = process.argv[2];
@@ -25,7 +26,11 @@ function gatherStoriesSinceLastPost(lastPostTime) {
       continue;
     }
 
-    const dayStories = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    const dayStories = readJsonFile(filePath, `stories data for ${date}`);
+    if (!Array.isArray(dayStories)) {
+      throw new Error(`Expected stories data for ${date} at ${filePath} to be an array.`);
+    }
+
     stories.push(...dayStories.filter((story) => new Date(story.published_at) > cutoff));
   }
 
@@ -46,6 +51,9 @@ async function main() {
     return;
   }
 
+  // Morning editions intentionally publish whenever there is at least one story.
+  // The minimum threshold only applies to the second daily edition so the evening
+  // run does not publish a thin recap and instead carries stories forward.
   if (type === "evening" && stories.length < config.min_stories_for_post) {
     console.log(
       `Not enough stories for an evening post (${stories.length}/${config.min_stories_for_post}).`,
@@ -59,6 +67,7 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error(error);
+  const message = error instanceof Error ? error.message : String(error);
+  console.error(`[run-generate] ${message}`);
   process.exit(1);
 });

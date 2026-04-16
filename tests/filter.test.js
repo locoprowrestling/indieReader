@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
+import { readConfig } from "../scripts/config.js";
 import { filterStories, isIndieStory } from "../scripts/filter.js";
+
+const config = readConfig();
 
 describe("isIndieStory", () => {
   it("keeps a pure indie story", () => {
@@ -7,7 +10,7 @@ describe("isIndieStory", () => {
       title: "GCW announces Spring Fling",
       summary: "Game Changer Wrestling returns.",
     };
-    expect(isIndieStory(story)).toBe(true);
+    expect(isIndieStory(story, config)).toBe(true);
   });
 
   it("drops a mainstream WWE story", () => {
@@ -15,7 +18,7 @@ describe("isIndieStory", () => {
       title: "WWE signs new deal",
       summary: "World Wrestling Entertainment expands.",
     };
-    expect(isIndieStory(story)).toBe(false);
+    expect(isIndieStory(story, config)).toBe(false);
   });
 
   it("drops an AEW story", () => {
@@ -23,7 +26,7 @@ describe("isIndieStory", () => {
       title: "AEW Dynamite results",
       summary: "All Elite Wrestling recap.",
     };
-    expect(isIndieStory(story)).toBe(false);
+    expect(isIndieStory(story, config)).toBe(false);
   });
 
   it("drops an NJPW story", () => {
@@ -31,7 +34,7 @@ describe("isIndieStory", () => {
       title: "New Japan announces tour",
       summary: "NJPW returns to the US.",
     };
-    expect(isIndieStory(story)).toBe(false);
+    expect(isIndieStory(story, config)).toBe(false);
   });
 
   it("keeps a WWE crossover story", () => {
@@ -39,7 +42,7 @@ describe("isIndieStory", () => {
       title: "Local indie star signs WWE ID program deal",
       summary: "Independent wrestler joins WWE ID.",
     };
-    expect(isIndieStory(story)).toBe(true);
+    expect(isIndieStory(story, config)).toBe(true);
   });
 
   it("keeps an AEW partnership story", () => {
@@ -47,7 +50,7 @@ describe("isIndieStory", () => {
       title: "AEW announces partnership with indie promotion",
       summary: "Co-promotion deal with indie group.",
     };
-    expect(isIndieStory(story)).toBe(true);
+    expect(isIndieStory(story, config)).toBe(true);
   });
 
   it("is case-insensitive for blocklist terms", () => {
@@ -55,7 +58,7 @@ describe("isIndieStory", () => {
       title: "wwe news",
       summary: "wwe smackdown results",
     };
-    expect(isIndieStory(story)).toBe(false);
+    expect(isIndieStory(story, config)).toBe(false);
   });
 
   it("does not keep a mainstream story just because it mentions indies", () => {
@@ -63,7 +66,7 @@ describe("isIndieStory", () => {
       title: "Oba Femi calls WWE NXT his version of the indies",
       summary: "A WWE NXT talent compares the brand to the indies.",
     };
-    expect(isIndieStory(story)).toBe(false);
+    expect(isIndieStory(story, config)).toBe(false);
   });
 
   it("drops stale stories even if they are not mainstream", () => {
@@ -72,7 +75,7 @@ describe("isIndieStory", () => {
       summary: "An old indie show announcement.",
       published_at: "2016-01-01T00:00:00Z",
     };
-    expect(isIndieStory(story)).toBe(false);
+    expect(isIndieStory(story, config)).toBe(false);
   });
 
   it("drops generic promo headlines", () => {
@@ -81,7 +84,7 @@ describe("isIndieStory", () => {
       summary: "",
       published_at: new Date().toISOString(),
     };
-    expect(isIndieStory(story)).toBe(false);
+    expect(isIndieStory(story, config)).toBe(false);
   });
 });
 
@@ -93,7 +96,7 @@ describe("filterStories", () => {
       { title: "MLW announces card", summary: "Major League Wrestling card set." },
     ];
 
-    const result = filterStories(stories);
+    const result = filterStories(stories, config);
     expect(result).toHaveLength(2);
     expect(result[0].title).toBe("GCW Spring Fling");
     expect(result[1].title).toBe("MLW announces card");

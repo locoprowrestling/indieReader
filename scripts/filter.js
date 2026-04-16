@@ -21,8 +21,7 @@ function isGenericPromo(story) {
   return GENERIC_HEADLINE_PATTERNS.some((pattern) => pattern.test(title));
 }
 
-export function isIndieStory(story) {
-  const config = readConfig();
+export function isIndieStory(story, config) {
   const text = `${story.title ?? ""} ${story.summary ?? ""}`.toLowerCase();
 
   if (!story.title || isGenericPromo(story) || !isFreshStory(story)) {
@@ -37,6 +36,6 @@ export function isIndieStory(story) {
   return config.crossover_signals.some((signal) => text.includes(signal.toLowerCase()));
 }
 
-export function filterStories(stories) {
-  return stories.filter((story) => isIndieStory(story));
+export function filterStories(stories, config = readConfig()) {
+  return stories.filter((story) => isIndieStory(story, config));
 }

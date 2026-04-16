@@ -1,7 +1,7 @@
-import fs from "node:fs";
+import { readJsonFile } from "./json-file.js";
 
 const CONFIG_URL = new URL("../config/sources.json", import.meta.url);
 
 export function readConfig() {
-  return JSON.parse(fs.readFileSync(CONFIG_URL, "utf-8"));
+  return readJsonFile(CONFIG_URL, "source config");
 }

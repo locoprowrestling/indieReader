@@ -21,6 +21,49 @@ function buildPrompt(stories) {
   return `Write an indieReader editorial from the following stories:\n\n${storyList}`;
 }
 
+export function yamlScalar(value) {
+  const normalized = String(value ?? "")
+    .replace(/\r?\n+/g, " ")
+    .trim();
+  return JSON.stringify(normalized);
+}
+
+export function buildFrontmatter(stories, type, now = new Date()) {
+  const date = now.toISOString().slice(0, 10);
+  const time = now.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "America/Denver",
+  });
+  const title =
+    type === "morning"
+      ? "Indie Wrestling Roundup - Morning Edition"
+      : "Indie Wrestling Roundup - Evening Edition";
+  const sourcesYaml =
+    stories.length === 0
+      ? "  []"
+      : stories
+          .map(
+            (story) =>
+              `  - url: ${yamlScalar(story.url)}\n    title: ${yamlScalar(story.title)}`,
+          )
+          .join("\n");
+
+  return `---
+title: ${yamlScalar(title)}
+date: ${yamlScalar(date)}
+time: ${yamlScalar(time)}
+type: ${yamlScalar(type)}
+story_count: ${stories.length}
+ai_provider: ${yamlScalar("openai")}
+sources:
+${sourcesYaml}
+---
+
+`;
+}
+
 async function callOpenAI(stories) {
   if (!process.env.OPENAI_API_KEY) {
     throw new Error("OPENAI_API_KEY is required to generate a post.");
@@ -42,36 +85,8 @@ async function callOpenAI(stories) {
 export async function generatePost(stories, type) {
   const now = new Date();
   const date = now.toISOString().slice(0, 10);
-  const time = now.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "America/Denver",
-  });
-  const title =
-    type === "morning"
-      ? "Indie Wrestling Roundup - Morning Edition"
-      : "Indie Wrestling Roundup - Evening Edition";
   const body = await callOpenAI(stories);
-  const sourcesYaml = stories
-    .map(
-      (story) =>
-        `  - url: "${story.url.replace(/"/g, '\\"')}"\n    title: "${story.title.replace(/"/g, '\\"')}"`,
-    )
-    .join("\n");
-
-  const frontmatter = `---
-title: "${title}"
-date: ${date}
-time: "${time}"
-type: ${type}
-story_count: ${stories.length}
-ai_provider: openai
-sources:
-${sourcesYaml}
----
-
-`;
+  const frontmatter = buildFrontmatter(stories, type, now);
 
   const outputPath = path.resolve(`src/content/posts/${date}-${type}.md`);
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });

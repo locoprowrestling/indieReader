@@ -1,13 +1,5 @@
 ---
-interface Story {
-  id?: string;
-  title: string;
-  summary: string;
-  url: string;
-  source: string;
-  published_at: string;
-  platform: string;
-}
+import type { Story } from "../lib/news";
 
 interface Props {
   stories: Story[];

@@ -11,16 +11,28 @@ import {
   fetchYouTube,
 } from "./fetch-social.js";
 import { filterStories } from "./filter.js";
+import { readJsonFileIfExists } from "./json-file.js";
 import { incrementStoriesCount } from "./state.js";
+
+function getErrorMessage(error) {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function readExistingStories(filePath) {
+  const stories = readJsonFileIfExists(filePath, [], "existing stories data");
+  if (!Array.isArray(stories)) {
+    throw new Error(`Expected existing stories data at ${filePath} to be an array.`);
+  }
+
+  return stories;
+}
 
 async function main() {
   const config = readConfig();
   const today = new Date().toISOString().slice(0, 10);
   const outputPath = path.resolve(`data/news-${today}.json`);
 
-  const existingStories = fs.existsSync(outputPath)
-    ? JSON.parse(fs.readFileSync(outputPath, "utf-8"))
-    : [];
+  const existingStories = readExistingStories(outputPath);
   const existingIds = existingStories.map((story) => story.id);
   const rawStories = [];
 
@@ -44,11 +56,19 @@ async function main() {
     }
   }
 
-  const social = config.social_allowlist;
-  rawStories.push(...(await fetchTwitter(social.twitter || [])));
-  rawStories.push(...(await fetchYouTube(social.youtube || [])));
-  rawStories.push(...(await fetchFacebook(social.facebook || [])));
-  rawStories.push(...(await fetchInstagram(social.instagram || [])));
+  const social = config.social_allowlist || {};
+  for (const [label, fetcher, targets] of [
+    ["Twitter", fetchTwitter, social.twitter || []],
+    ["YouTube", fetchYouTube, social.youtube || []],
+    ["Facebook", fetchFacebook, social.facebook || []],
+    ["Instagram", fetchInstagram, social.instagram || []],
+  ]) {
+    try {
+      rawStories.push(...(await fetcher(targets)));
+    } catch (error) {
+      console.warn(`[${label}] Failed: ${getErrorMessage(error)}`);
+    }
+  }
 
   const filteredStories = filterStories(rawStories);
   const taggedStories = filteredStories.map((story) => ({
@@ -74,6 +94,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error(error);
+  console.error(`[fetch] ${getErrorMessage(error)}`);
   process.exit(1);
 });
