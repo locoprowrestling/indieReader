@@ -28,7 +28,7 @@ async function callOpenAI(stories) {
 
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   const response = await client.chat.completions.create({
-    model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+    model: process.env.OPENAI_MODEL || "gpt-5.4",
     max_tokens: 2048,
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
