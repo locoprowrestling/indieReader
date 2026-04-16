@@ -65,6 +65,24 @@ describe("isIndieStory", () => {
     };
     expect(isIndieStory(story)).toBe(false);
   });
+
+  it("drops stale stories even if they are not mainstream", () => {
+    const story = {
+      title: "Old indie announcement",
+      summary: "An old indie show announcement.",
+      published_at: "2016-01-01T00:00:00Z",
+    };
+    expect(isIndieStory(story)).toBe(false);
+  });
+
+  it("drops generic promo headlines", () => {
+    const story = {
+      title: "GET MORE HEADLINES AT PWINSIDER.COM!!!!",
+      summary: "",
+      published_at: new Date().toISOString(),
+    };
+    expect(isIndieStory(story)).toBe(false);
+  });
 });
 
 describe("filterStories", () => {
