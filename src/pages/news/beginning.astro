@@ -1,0 +1,20 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Tabs from "../../components/Tabs.astro";
+import { withBase } from "../../lib/base";
+---
+
+<BaseLayout title="Beginning of Timeline">
+  <Tabs active="news" />
+  <section class="page-hero">
+    <p class="eyebrow">Timeline start</p>
+    <h2 class="page-title">This is the beginning of the timeline.</h2>
+    <p class="page-summary">
+      There are no earlier daily files yet. New editions will extend the archive from here as indieReader continues to collect stories.
+    </p>
+    <div class="page-actions">
+      <a class="button-primary" href={withBase("/")}>Return to latest news</a>
+      <a class="button-secondary" href={withBase("/archive/")}>Browse archive</a>
+    </div>
+  </section>
+</BaseLayout>

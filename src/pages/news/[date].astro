@@ -3,7 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import NewsFeed from "../../components/NewsFeed.astro";
 import Tabs from "../../components/Tabs.astro";
 import { withBase } from "../../lib/base";
-import { listNewsDates, loadStoriesForDate } from "../../lib/news";
+import { NEWS_BEGINNING_PATH, getNewsNavigation, listNewsDates, loadStoriesForDate } from "../../lib/news";
 
 export function getStaticPaths() {
   return listNewsDates().map((date) => ({ params: { date } }));
@@ -11,13 +11,11 @@ export function getStaticPaths() {
 
 const { date } = Astro.params;
 const stories = loadStoriesForDate(date);
-const today = new Date().toISOString().slice(0, 10);
-const prev = new Date(new Date(`${date}T12:00:00Z`).getTime() - 86_400_000)
-  .toISOString()
-  .slice(0, 10);
-const next = new Date(new Date(`${date}T12:00:00Z`).getTime() + 86_400_000)
-  .toISOString()
-  .slice(0, 10);
+const newsNav = getNewsNavigation(date);
+const previousHref = newsNav.olderDate
+  ? withBase(`/news/${newsNav.olderDate}/`)
+  : withBase(NEWS_BEGINNING_PATH);
+const nextHref = newsNav.newerDate ? withBase(`/news/${newsNav.newerDate}/`) : null;
 ---
 
 <BaseLayout title={`News - ${date}`}>
@@ -36,9 +34,9 @@ const next = new Date(new Date(`${date}T12:00:00Z`).getTime() + 86_400_000)
       A date-specific look at the stories collected for this edition of indieReader.
     </p>
     <div class="page-actions">
-      <a class="button-secondary" href={withBase(`/news/${prev}/`)}>Previous</a>
-      {date !== today ? <a class="button-secondary" href={withBase(`/news/${next}/`)}>Next</a> : null}
-      {date !== today ? <a class="button-primary" href={withBase("/")}>Today</a> : null}
+      <a class="button-secondary" href={previousHref}>Previous</a>
+      {nextHref ? <a class="button-secondary" href={nextHref}>Next</a> : null}
+      {!newsNav.isLatest ? <a class="button-primary" href={withBase("/")}>Today</a> : null}
     </div>
   </section>
   <section class="section-card">

@@ -3,10 +3,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import NewsFeed from "../components/NewsFeed.astro";
 import Tabs from "../components/Tabs.astro";
 import { withBase } from "../lib/base";
-import { listNewsDates, loadLatestStories } from "../lib/news";
+import { NEWS_BEGINNING_PATH, getNewsNavigation, listNewsDates, loadLatestStories } from "../lib/news";
 
 const stories = loadLatestStories();
-const latestDate = listNewsDates()[0];
+const dates = listNewsDates();
+const latestDate = dates[0];
 const activeDate = latestDate || new Date().toISOString().slice(0, 10);
 const pageDateLabel = new Date(`${activeDate}T12:00:00Z`).toLocaleDateString("en-US", {
   weekday: "long",
@@ -16,9 +17,9 @@ const pageDateLabel = new Date(`${activeDate}T12:00:00Z`).toLocaleDateString("en
   timeZone: "America/Denver",
 });
 
-const previousDate = new Date(new Date(`${activeDate}T12:00:00Z`).getTime() - 86_400_000)
-  .toISOString()
-  .slice(0, 10);
+const newsNav = latestDate ? getNewsNavigation(latestDate) : null;
+const previousHref =
+  newsNav?.olderDate ? withBase(`/news/${newsNav.olderDate}/`) : withBase(NEWS_BEGINNING_PATH);
 ---
 
 <BaseLayout title="News">
@@ -41,7 +42,7 @@ const previousDate = new Date(new Date(`${activeDate}T12:00:00Z`).getTime() - 86
         <p class="section-kicker">News feed</p>
         <h3 class="section-title">{pageDateLabel}</h3>
       </div>
-      <a class="inline-link" href={withBase(`/news/${previousDate}/`)}>View previous day</a>
+      <a class="inline-link" href={previousHref}>View previous day</a>
     </div>
     <NewsFeed stories={stories} />
   </section>

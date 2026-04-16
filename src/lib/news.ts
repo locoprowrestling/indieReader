@@ -12,6 +12,7 @@ export interface Story {
 }
 
 const DATA_DIR = path.resolve("data");
+export const NEWS_BEGINNING_PATH = "/news/beginning/";
 
 export function loadStoriesForDate(date: string): Story[] {
   const dataPath = path.resolve(`data/news-${date}.json`);
@@ -57,4 +58,27 @@ export function listNewsDates(): string[] {
     .filter((file) => /^news-\d{4}-\d{2}-\d{2}\.json$/.test(file))
     .map((file) => file.slice(5, 15))
     .sort((a, b) => b.localeCompare(a));
+}
+
+export function getNewsNavigation(date: string) {
+  const dates = listNewsDates();
+  const index = dates.indexOf(date);
+
+  if (index === -1) {
+    return {
+      dates,
+      olderDate: null,
+      newerDate: null,
+      isLatest: false,
+      isEarliest: false,
+    };
+  }
+
+  return {
+    dates,
+    olderDate: dates[index + 1] || null,
+    newerDate: dates[index - 1] || null,
+    isLatest: index === 0,
+    isEarliest: index === dates.length - 1,
+  };
 }
