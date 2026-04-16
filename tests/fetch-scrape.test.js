@@ -16,6 +16,7 @@ describe("parseCagematchHTML", () => {
     const html = `
       <div class="news-item">
         <div class="news-title"><a href="/?id=123">GCW books title match</a></div>
+        <time datetime="2026-04-15T09:30:00Z"></time>
         <div class="news-text">The promotion set the main event.</div>
       </div>
       <div class="news-item">
@@ -36,6 +37,7 @@ describe("parseCagematchHTML", () => {
       summary: "The promotion set the main event.",
       url: "https://www.cagematch.net/?id=123",
       source: "Cagematch",
+      published_at: "2026-04-15T09:30:00.000Z",
       platform: "scrape",
     });
     expect(stories[1].url).toBe("https://example.com/full-story");

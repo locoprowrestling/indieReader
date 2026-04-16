@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dedupeStories, storyId } from "../scripts/dedupe.js";
+import { dedupeStories, legacyStoryId, storyId } from "../scripts/dedupe.js";
 
 describe("storyId", () => {
   it("returns the same hash for the same URL", () => {
@@ -15,7 +15,7 @@ describe("storyId", () => {
 
   it("falls back to the title when the URL is missing", () => {
     const story = { url: "", title: "Unique Title Here" };
-    expect(storyId(story)).toHaveLength(32);
+    expect(storyId(story)).toHaveLength(64);
   });
 });
 
@@ -46,5 +46,11 @@ describe("dedupeStories", () => {
       { id: "x2", title: "Two" },
     ];
     expect(dedupeStories(stories, [])).toHaveLength(2);
+  });
+
+  it("treats legacy md5 IDs as duplicates during the hash migration", () => {
+    const story = { title: "Story 1", url: "https://example.com/story-1" };
+
+    expect(dedupeStories([story], [legacyStoryId(story)])).toHaveLength(0);
   });
 });

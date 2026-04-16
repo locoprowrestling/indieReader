@@ -1,5 +1,29 @@
 import * as cheerio from "cheerio";
 
+function parsePublishedAt(root) {
+  const candidates = [
+    root.find("time[datetime]").first().attr("datetime"),
+    root.find("[data-published-at]").first().attr("data-published-at"),
+    root.find("[data-date]").first().attr("data-date"),
+    root.find(".news-date").first().text(),
+    root.find(".date").first().text(),
+  ];
+
+  for (const candidate of candidates) {
+    const value = candidate?.trim();
+    if (!value) {
+      continue;
+    }
+
+    const timestamp = Date.parse(value);
+    if (!Number.isNaN(timestamp)) {
+      return new Date(timestamp).toISOString();
+    }
+  }
+
+  return null;
+}
+
 export function parseCagematchHTML(html, scrapeConfig) {
   const $ = cheerio.load(html);
   const items = [];
@@ -26,7 +50,7 @@ export function parseCagematchHTML(html, scrapeConfig) {
       summary,
       url,
       source: scrapeConfig.name,
-      published_at: new Date().toISOString(),
+      published_at: parsePublishedAt(root) || new Date().toISOString(),
       platform: "scrape",
     });
   });
