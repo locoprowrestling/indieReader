@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import NewsFeed from "../../components/NewsFeed.astro";
+import Tabs from "../../components/Tabs.astro";
+import { listNewsDates, loadStoriesForDate } from "../../lib/news";
+
+export function getStaticPaths() {
+  return listNewsDates().map((date) => ({ params: { date } }));
+}
+
+const { date } = Astro.params;
+const stories = loadStoriesForDate(date);
+const base = import.meta.env.BASE_URL;
+const today = new Date().toISOString().slice(0, 10);
+const prev = new Date(new Date(`${date}T12:00:00Z`).getTime() - 86_400_000)
+  .toISOString()
+  .slice(0, 10);
+const next = new Date(new Date(`${date}T12:00:00Z`).getTime() + 86_400_000)
+  .toISOString()
+  .slice(0, 10);
+---
+
+<BaseLayout title={`News - ${date}`}>
+  <Tabs active="news" />
+  <div
+    style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;"
+  >
+    <h2 class="section-title" style="margin: 0;">
+      {new Date(`${date}T12:00:00Z`).toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })}
+    </h2>
+    <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+      <a href={`${base}news/${prev}/`} style="color: var(--muted); text-decoration: none;">Previous</a>
+      {date !== today ? (
+        <a href={`${base}news/${next}/`} style="color: var(--muted); text-decoration: none;">Next</a>
+      ) : null}
+      {date !== today ? (
+        <a href={base} style="color: var(--accent-alt); text-decoration: none;">Today</a>
+      ) : null}
+    </div>
+  </div>
+  <NewsFeed stories={stories} />
+</BaseLayout>

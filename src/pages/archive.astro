@@ -1,0 +1,14 @@
+---
+import { getCollection } from "astro:content";
+import Archive from "../components/Archive.astro";
+import Tabs from "../components/Tabs.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const posts = await getCollection("posts");
+posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Archive">
+  <Tabs active="archive" />
+  <Archive posts={posts} />
+</BaseLayout>

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "abc123",
+    "title": "GCW announces Spring Fling card with 12 matches",
+    "summary": "Game Changer Wrestling has revealed the full card for Spring Fling, featuring top indie talent from across North America.",
+    "url": "https://example.com/gcw-spring-fling",
+    "source": "Fightful",
+    "published_at": "2026-04-15T10:00:00Z",
+    "platform": "rss"
+  },
+  {
+    "id": "def456",
+    "title": "MLW signs three new talent to developmental deals",
+    "summary": "Major League Wrestling has inked three rising indie stars to developmental contracts ahead of their summer TV tapings.",
+    "url": "https://example.com/mlw-signings",
+    "source": "PWInsider",
+    "published_at": "2026-04-15T08:30:00Z",
+    "platform": "rss"
+  },
+  {
+    "id": "ghi789",
+    "title": "Defy Wrestling returns to Seattle with stacked card",
+    "summary": "Pacific Northwest favorite Defy Wrestling has announced their return to Seattle's Showbox venue with a card headlined by indie veterans.",
+    "url": "https://example.com/defy-seattle",
+    "source": "Cagematch",
+    "published_at": "2026-04-15T07:00:00Z",
+    "platform": "scrape"
+  }
+]

@@ -6,4 +6,5 @@ dist/
 !.env.example
 .DS_Store
 .superpowers/
+.remember/
 docs/superpowers/plans/

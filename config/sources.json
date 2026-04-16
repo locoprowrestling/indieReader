@@ -1,0 +1,54 @@
+{
+  "rss": [
+    "https://www.pwinsider.com/rss.php",
+    "https://www.fightful.com/wrestling/rss.xml",
+    "https://www.f4wonline.com/rss.xml"
+  ],
+  "scrape": [
+    {
+      "name": "Cagematch",
+      "url": "https://www.cagematch.net/?id=10",
+      "selector": ".news-item",
+      "titleSelector": ".news-title a",
+      "summarySelector": ".news-text",
+      "linkSelector": ".news-title a",
+      "baseUrl": "https://www.cagematch.net"
+    }
+  ],
+  "social_allowlist": {
+    "twitter": [],
+    "youtube": [],
+    "facebook": [],
+    "instagram": []
+  },
+  "blocklist": [
+    "WWE",
+    "NXT",
+    "RAW",
+    "SmackDown",
+    "WrestleMania",
+    "SummerSlam",
+    "AEW",
+    "All Elite Wrestling",
+    "TNA",
+    "Impact Wrestling",
+    "ROH",
+    "Ring of Honor",
+    "NJPW",
+    "New Japan Pro-Wrestling",
+    "New Japan"
+  ],
+  "crossover_signals": [
+    "ID program",
+    "WWE ID",
+    "indie",
+    "independent",
+    "partnership",
+    "co-promotion",
+    "developmental deal",
+    "local promotion",
+    "open contract",
+    "free agent"
+  ],
+  "min_stories_for_post": 5
+}

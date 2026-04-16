@@ -1,0 +1,39 @@
+---
+import { getCollection, render } from "astro:content";
+import BlogPost from "../components/BlogPost.astro";
+import Tabs from "../components/Tabs.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const posts = await getCollection("posts");
+posts.sort((a, b) => {
+  const dateDiff = b.data.date.getTime() - a.data.date.getTime();
+  if (dateDiff !== 0) {
+    return dateDiff;
+  }
+
+  return a.data.type === "morning" ? 1 : -1;
+});
+
+const latest = posts[0];
+const rendered = latest ? await render(latest) : null;
+---
+
+<BaseLayout title="Blog Post">
+  <Tabs active="blog" />
+  {
+    latest && rendered ? (
+      <BlogPost
+        title={latest.data.title}
+        date={latest.data.date}
+        time={latest.data.time}
+        type={latest.data.type}
+        story_count={latest.data.story_count}
+        ai_provider={latest.data.ai_provider}
+      >
+        <rendered.Content />
+      </BlogPost>
+    ) : (
+      <p class="empty-state">No blog posts have been generated yet.</p>
+    )
+  }
+</BaseLayout>

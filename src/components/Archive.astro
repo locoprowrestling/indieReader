@@ -1,0 +1,136 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  posts: CollectionEntry<"posts">[];
+}
+
+const { posts } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const grouped = posts.reduce<Record<string, CollectionEntry<"posts">[]>>((acc, post) => {
+  const key = post.data.date.toISOString().slice(0, 10);
+  if (!acc[key]) {
+    acc[key] = [];
+  }
+  acc[key].push(post);
+  return acc;
+}, {});
+
+const dates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+---
+
+<style>
+  .archive {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .archive-day {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .archive-day h3 {
+    margin: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--panel-border);
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .archive-link {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.85rem 0.95rem;
+    border: 1px solid var(--panel-border);
+    border-radius: 0.9rem;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.02);
+    transition:
+      border-color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .archive-link:hover {
+    border-color: rgba(255, 209, 102, 0.42);
+    transform: translateY(-1px);
+  }
+
+  .archive-dot {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .archive-dot.morning {
+    background: var(--accent-alt);
+  }
+
+  .archive-dot.evening {
+    background: #77b7ff;
+  }
+
+  .archive-title {
+    font-weight: 600;
+  }
+
+  .archive-meta {
+    margin-left: auto;
+    color: var(--subtle);
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 720px) {
+    .archive-link {
+      align-items: start;
+      flex-direction: column;
+    }
+
+    .archive-meta {
+      margin-left: 0;
+    }
+  }
+</style>
+
+{
+  dates.length === 0 ? (
+    <p class="empty-state">No posts have been generated yet.</p>
+  ) : (
+    <div class="archive">
+      {dates.map((dateKey) => (
+        <section class="archive-day">
+          <h3>
+            {new Date(`${dateKey}T12:00:00Z`).toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </h3>
+          {grouped[dateKey]
+            .sort((a, b) => {
+              if (a.data.type === b.data.type) {
+                return 0;
+              }
+              return a.data.type === "morning" ? -1 : 1;
+            })
+            .map((post) => (
+              <a class="archive-link" href={`${base}posts/${post.slug}/`}>
+                <span class={`archive-dot ${post.data.type}`}></span>
+                <span class="archive-title">{post.data.title}</span>
+                <span class="archive-meta">
+                  {post.data.story_count} stories · {post.data.ai_provider}
+                </span>
+              </a>
+            ))}
+        </section>
+      ))}
+    </div>
+  )
+}

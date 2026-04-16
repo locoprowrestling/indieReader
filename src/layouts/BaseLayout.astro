@@ -1,0 +1,219 @@
+---
+interface Props {
+  title?: string;
+}
+
+const { title = "indieReader" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Daily indie wrestling news and editorial coverage."
+    />
+    <title>{title} | indieReader</title>
+    <style is:global>
+      :root {
+        color-scheme: dark;
+        --bg: #120d12;
+        --bg-elevated: rgba(19, 18, 29, 0.86);
+        --panel: rgba(28, 24, 36, 0.92);
+        --panel-border: rgba(255, 255, 255, 0.09);
+        --panel-strong: rgba(255, 255, 255, 0.14);
+        --text: #f8f2ec;
+        --muted: #bdb1aa;
+        --subtle: #7b7177;
+        --accent: #ff6b2c;
+        --accent-soft: rgba(255, 107, 44, 0.16);
+        --accent-alt: #ffd166;
+        --shadow: 0 20px 80px rgba(0, 0, 0, 0.35);
+        --content-width: min(68rem, calc(100vw - 2rem));
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+
+      body {
+        font-family: "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(255, 107, 44, 0.28), transparent 34%),
+          radial-gradient(circle at top right, rgba(255, 209, 102, 0.18), transparent 30%),
+          linear-gradient(180deg, #0a070d 0%, #120d12 50%, #0b0810 100%);
+        color: var(--text);
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .site-shell {
+        padding: 1rem 0 3rem;
+      }
+
+      .site-header {
+        width: var(--content-width);
+        margin: 0 auto 1.5rem;
+        padding: 1.25rem 1.25rem 1rem;
+        border: 1px solid var(--panel-strong);
+        border-radius: 1.25rem;
+        background:
+          linear-gradient(135deg, rgba(255, 107, 44, 0.17), rgba(17, 20, 33, 0) 44%),
+          var(--bg-elevated);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(14px);
+      }
+
+      .site-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.3rem 0.65rem;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent-alt);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .site-kicker::before {
+        content: "";
+        width: 0.55rem;
+        height: 0.55rem;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 0 0.3rem rgba(255, 107, 44, 0.18);
+      }
+
+      .site-title-row {
+        display: flex;
+        gap: 1rem;
+        align-items: end;
+        justify-content: space-between;
+        margin-top: 1rem;
+      }
+
+      .site-title {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 4.2rem);
+        line-height: 0.95;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .site-tagline {
+        max-width: 28rem;
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      main {
+        width: var(--content-width);
+        margin: 0 auto;
+        padding: 1.4rem;
+        border: 1px solid var(--panel-border);
+        border-radius: 1.25rem;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(16px);
+      }
+
+      nav.tabs {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+      }
+
+      nav.tabs a {
+        padding: 0.7rem 1rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        color: var(--muted);
+        font-size: 0.92rem;
+        text-decoration: none;
+        transition:
+          color 160ms ease,
+          border-color 160ms ease,
+          background-color 160ms ease,
+          transform 160ms ease;
+      }
+
+      nav.tabs a:hover {
+        color: var(--text);
+        border-color: var(--panel-strong);
+        transform: translateY(-1px);
+      }
+
+      nav.tabs a.active {
+        color: #141015;
+        background: linear-gradient(135deg, var(--accent-alt), var(--accent));
+        border-color: transparent;
+        font-weight: 700;
+      }
+
+      .section-title {
+        margin: 0 0 1rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .empty-state {
+        padding: 3rem 1.25rem;
+        text-align: center;
+        color: var(--subtle);
+      }
+
+      @media (max-width: 720px) {
+        .site-shell {
+          padding-top: 0.75rem;
+        }
+
+        .site-header,
+        main {
+          width: min(100vw - 1rem, 68rem);
+          border-radius: 1rem;
+        }
+
+        .site-title-row {
+          align-items: start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <span class="site-kicker">Independent wrestling desk</span>
+        <div class="site-title-row">
+          <h1 class="site-title">indieReader</h1>
+          <p class="site-tagline">
+            A static front page for the promotions, cards, signings, and live-scene shifts that matter outside the mainstream bubble.
+          </p>
+        </div>
+      </header>
+      <main>
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

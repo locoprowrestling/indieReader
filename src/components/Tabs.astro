@@ -1,0 +1,14 @@
+---
+interface Props {
+  active: "news" | "blog" | "archive";
+}
+
+const { active } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<nav class="tabs" aria-label="Primary">
+  <a href={base} class={active === "news" ? "active" : undefined}>News</a>
+  <a href={`${base}blog/`} class={active === "blog" ? "active" : undefined}>Blog Post</a>
+  <a href={`${base}archive/`} class={active === "archive" ? "active" : undefined}>Archive</a>
+</nav>

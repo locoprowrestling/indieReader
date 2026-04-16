@@ -1,0 +1,31 @@
+name: Generate Evening Post
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - name: Generate evening blog post or carry over state
+        run: node scripts/run-generate.js evening
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
+      - name: Commit post or carry-over state
+        run: |
+          git config user.name "indieReader Bot"
+          git config user.email "noreply@indiereader"
+          git add src/content/posts/ data/state.json
+          git diff --staged --quiet || (git commit -m "feat: evening post or carry-over $(date -u +%Y-%m-%d)" && git push)

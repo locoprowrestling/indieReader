@@ -1,0 +1,131 @@
+---
+interface Story {
+  id?: string;
+  title: string;
+  summary: string;
+  url: string;
+  source: string;
+  published_at: string;
+  platform: string;
+}
+
+interface Props {
+  stories: Story[];
+}
+
+const { stories } = Astro.props;
+
+function formatTime(iso: string) {
+  return new Date(iso).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "America/Denver",
+  });
+}
+
+function platformLabel(platform: string) {
+  switch (platform) {
+    case "rss":
+      return "RSS";
+    case "scrape":
+      return "Scrape";
+    case "twitter":
+      return "Twitter";
+    case "facebook":
+      return "Facebook";
+    case "instagram":
+      return "Instagram";
+    case "youtube":
+      return "YouTube";
+    default:
+      return "Source";
+  }
+}
+---
+
+<style>
+  .feed {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .story {
+    padding: 1.1rem;
+    border: 1px solid var(--panel-border);
+    border-radius: 1rem;
+    background:
+      linear-gradient(135deg, rgba(255, 107, 44, 0.08), rgba(255, 255, 255, 0) 36%),
+      rgba(17, 16, 27, 0.92);
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .story:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 209, 102, 0.42);
+  }
+
+  .story-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.7rem;
+    font-size: 0.76rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .story-chip {
+    padding: 0.22rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--panel-strong);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .story h3 {
+    margin: 0 0 0.45rem;
+    font-size: 1.1rem;
+    line-height: 1.25;
+  }
+
+  .story h3 a {
+    text-decoration: none;
+  }
+
+  .story h3 a:hover {
+    color: var(--accent-alt);
+  }
+
+  .story p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+</style>
+
+{
+  stories.length === 0 ? (
+    <p class="empty-state">No stories fetched yet. Check back after the next crawl.</p>
+  ) : (
+    <div class="feed">
+      {stories.map((story) => (
+        <article class="story">
+          <div class="story-meta">
+            <span class="story-chip">{platformLabel(story.platform)}</span>
+            <span>{story.source}</span>
+            <span>{formatTime(story.published_at)} MT</span>
+          </div>
+          <h3>
+            <a href={story.url} target="_blank" rel="noreferrer">
+              {story.title}
+            </a>
+          </h3>
+          <p>{story.summary}</p>
+        </article>
+      ))}
+    </div>
+  )
+}
