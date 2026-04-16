@@ -20,15 +20,16 @@ const rendered = latest ? await render(latest) : null;
 
 <BaseLayout title="Blog Post">
   <Tabs active="blog" />
+  <section class="page-hero page-hero--dark">
+    <p class="eyebrow">Latest column</p>
+    <h2 class="page-title">{latest ? latest.data.title : "Editorial from the indie scene"}</h2>
+    <p class="page-summary">
+      Twice-daily editorial perspective, woven from the stories that survive the filter and feel worth lingering on.
+    </p>
+  </section>
   {
     latest && rendered ? (
-      <BlogPost
-        title={latest.data.title}
-        date={latest.data.date}
-        time={latest.data.time}
-        type={latest.data.type}
-        story_count={latest.data.story_count}
-      >
+      <BlogPost title={latest.data.title} date={latest.data.date} time={latest.data.time} type={latest.data.type} story_count={latest.data.story_count}>
         <rendered.Content />
       </BlogPost>
     ) : (

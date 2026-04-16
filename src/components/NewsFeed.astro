@@ -46,24 +46,42 @@ function platformLabel(platform: string) {
 <style>
   .feed {
     display: grid;
-    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.15rem;
   }
 
   .story {
-    padding: 1.1rem;
-    border: 1px solid var(--panel-border);
-    border-radius: 1rem;
+    display: grid;
+    gap: 1rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: var(--radius-card);
     background:
-      linear-gradient(135deg, rgba(255, 107, 44, 0.08), rgba(255, 255, 255, 0) 36%),
-      rgba(17, 16, 27, 0.92);
+      linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(247, 247, 250, 0.92)),
+      var(--surface-solid);
+    box-shadow: var(--shadow);
     transition:
       transform 180ms ease,
-      border-color 180ms ease;
+      box-shadow 180ms ease;
+  }
+
+  .story--featured {
+    grid-column: 1 / -1;
+    padding: clamp(1.7rem, 4vw, 2.6rem);
+    background:
+      radial-gradient(circle at top right, rgba(41, 151, 255, 0.28), transparent 28%),
+      linear-gradient(180deg, #1d1d1f 0%, #272729 100%);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .story--featured .story-copy {
+    max-width: 48rem;
   }
 
   .story:hover {
     transform: translateY(-2px);
-    border-color: rgba(255, 209, 102, 0.42);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.12);
   }
 
   .story-meta {
@@ -71,24 +89,35 @@ function platformLabel(platform: string) {
     align-items: center;
     gap: 0.55rem;
     flex-wrap: wrap;
-    margin-bottom: 0.7rem;
-    font-size: 0.76rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+    color: var(--text-subtle);
+    letter-spacing: -0.01em;
   }
 
   .story-chip {
-    padding: 0.22rem 0.55rem;
+    padding: 0.32rem 0.68rem;
     border-radius: 999px;
-    border: 1px solid var(--panel-strong);
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--chip-bg);
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .story--featured .story-chip {
+    background: rgba(41, 151, 255, 0.18);
+    color: #ffffff;
   }
 
   .story h3 {
-    margin: 0 0 0.45rem;
-    font-size: 1.1rem;
-    line-height: 1.25;
+    margin: 0;
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+  }
+
+  .story--featured h3 {
+    font-size: clamp(2.1rem, 5vw, 3.35rem);
+    max-width: 12ch;
   }
 
   .story h3 a {
@@ -96,13 +125,52 @@ function platformLabel(platform: string) {
   }
 
   .story h3 a:hover {
-    color: var(--accent-alt);
+    color: var(--accent-link);
+  }
+
+  .story--featured h3 a:hover,
+  .story--featured .story-source-link:hover {
+    color: var(--accent-bright);
   }
 
   .story p {
     margin: 0;
-    color: var(--muted);
+    color: var(--text-muted);
+    font-size: 1rem;
     line-height: 1.6;
+  }
+
+  .story--featured p,
+  .story--featured .story-meta {
+    color: rgba(255, 255, 255, 0.76);
+  }
+
+  .story-source-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--accent-link);
+    font-size: 0.94rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .story-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 760px) {
+    .feed {
+      grid-template-columns: 1fr;
+    }
+
+    .story--featured {
+      grid-column: auto;
+    }
   }
 </style>
 
@@ -111,19 +179,26 @@ function platformLabel(platform: string) {
     <p class="empty-state">No stories fetched yet. Check back after the next crawl.</p>
   ) : (
     <div class="feed">
-      {stories.map((story) => (
-        <article class="story">
+      {stories.map((story, index) => (
+        <article class:list={["story", index === 0 && "story--featured"]}>
           <div class="story-meta">
             <span class="story-chip">{platformLabel(story.platform)}</span>
             <span>{story.source}</span>
             <span>{formatTime(story.published_at)} MT</span>
           </div>
-          <h3>
-            <a href={story.url} target="_blank" rel="noreferrer">
-              {story.title}
+          <div class="story-copy">
+            <h3>
+              <a href={story.url} target="_blank" rel="noreferrer">
+                {story.title}
+              </a>
+            </h3>
+            <p>{story.summary}</p>
+          </div>
+          <div class="story-footer">
+            <a class="story-source-link" href={story.url} target="_blank" rel="noreferrer">
+              Read source
             </a>
-          </h3>
-          <p>{story.summary}</p>
+          </div>
         </article>
       ))}
     </div>

@@ -3,10 +3,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import NewsFeed from "../components/NewsFeed.astro";
 import Tabs from "../components/Tabs.astro";
 import { withBase } from "../lib/base";
-import { loadLatestStories } from "../lib/news";
+import { listNewsDates, loadLatestStories } from "../lib/news";
 
 const stories = loadLatestStories();
-const todayLabel = new Date().toLocaleDateString("en-US", {
+const latestDate = listNewsDates()[0];
+const activeDate = latestDate || new Date().toISOString().slice(0, 10);
+const pageDateLabel = new Date(`${activeDate}T12:00:00Z`).toLocaleDateString("en-US", {
   weekday: "long",
   month: "long",
   day: "numeric",
@@ -14,19 +16,33 @@ const todayLabel = new Date().toLocaleDateString("en-US", {
   timeZone: "America/Denver",
 });
 
-const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
+const previousDate = new Date(new Date(`${activeDate}T12:00:00Z`).getTime() - 86_400_000)
+  .toISOString()
+  .slice(0, 10);
 ---
 
 <BaseLayout title="News">
   <Tabs active="news" />
-  <h2 class="section-title">{todayLabel}</h2>
-  <NewsFeed stories={stories} />
-  <p style="margin: 1.5rem 0 0; text-align: center;">
-    <a
-      href={withBase(`/news/${yesterday}/`)}
-      style="color: var(--muted); font-size: 0.9rem; text-decoration: none;"
-    >
-      View yesterday's news
-    </a>
-  </p>
+  <section class="page-hero">
+    <p class="eyebrow">Daily independent wrestling brief</p>
+    <h2 class="page-title">Independent wrestling, arranged with room to breathe.</h2>
+    <p class="page-summary">
+      A calmer front page for cards, partnerships, signings, and notable movement across the indie scene, presented with the cadence of a product reveal instead of a cluttered wire feed.
+    </p>
+    <div class="page-actions">
+      <a class="button-primary" href={withBase("/blog/")}>Read latest column</a>
+      <a class="button-secondary" href={withBase("/archive/")}>Browse archive</a>
+    </div>
+  </section>
+
+  <section class="section-card">
+    <div class="section-header">
+      <div>
+        <p class="section-kicker">News feed</p>
+        <h3 class="section-title">{pageDateLabel}</h3>
+      </div>
+      <a class="inline-link" href={withBase(`/news/${previousDate}/`)}>View previous day</a>
+    </div>
+    <NewsFeed stories={stories} />
+  </section>
 </BaseLayout>

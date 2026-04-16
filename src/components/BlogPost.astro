@@ -26,17 +26,24 @@ const editionLabel = type === "morning" ? "Morning Edition" : "Evening Edition";
 <style>
   .post {
     display: grid;
-    gap: 1.5rem;
+    gap: 1.75rem;
+    padding: clamp(1.6rem, 3vw, 3rem);
+    border-radius: var(--radius-panel);
+    background: linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
+    border: 1px solid rgba(255, 255, 255, 0.88);
+    box-shadow: var(--shadow);
   }
 
   .post-header {
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--panel-border);
+    padding-bottom: 1.35rem;
+    border-bottom: 1px solid var(--border);
   }
 
   .post-header h2 {
-    margin: 0 0 0.8rem;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    margin: 0 0 1rem;
+    font-size: clamp(2.3rem, 5vw, 4rem);
+    font-weight: 600;
+    letter-spacing: -0.05em;
     line-height: 1.05;
   }
 
@@ -44,8 +51,8 @@ const editionLabel = type === "morning" ? "Morning Edition" : "Evening Edition";
     display: flex;
     flex-wrap: wrap;
     gap: 0.7rem;
-    color: var(--muted);
-    font-size: 0.86rem;
+    color: var(--text-subtle);
+    font-size: 0.9rem;
   }
 
   .post-pill {
@@ -54,22 +61,20 @@ const editionLabel = type === "morning" ? "Morning Edition" : "Evening Edition";
     gap: 0.45rem;
     padding: 0.34rem 0.72rem;
     border-radius: 999px;
-    background: var(--accent-soft);
-    color: var(--accent-alt);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 700;
+    background: rgba(0, 113, 227, 0.08);
+    color: var(--accent-link);
+    font-weight: 600;
   }
 
   .post-body {
     color: var(--text);
-    line-height: 1.8;
-    font-size: 1rem;
+    line-height: 1.7;
+    font-size: 1.0625rem;
   }
 
   .post-body :global(p) {
     margin: 0 0 1rem;
-    color: var(--muted);
+    color: var(--text-muted);
   }
 
   .post-body :global(h2),
@@ -79,7 +84,7 @@ const editionLabel = type === "morning" ? "Morning Edition" : "Evening Edition";
   }
 
   .post-body :global(a) {
-    color: var(--accent-alt);
+    color: var(--accent-link);
   }
 </style>
 

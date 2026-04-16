@@ -10,5 +10,12 @@ posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 <BaseLayout title="Archive">
   <Tabs active="archive" />
+  <section class="page-hero">
+    <p class="eyebrow">Archive</p>
+    <h2 class="page-title">Every edition, kept in sequence.</h2>
+    <p class="page-summary">
+      Morning and evening columns, grouped by day and presented like a product index instead of a noisy blog roll.
+    </p>
+  </section>
   <Archive posts={posts} />
 </BaseLayout>

@@ -22,10 +22,9 @@ const next = new Date(new Date(`${date}T12:00:00Z`).getTime() + 86_400_000)
 
 <BaseLayout title={`News - ${date}`}>
   <Tabs active="news" />
-  <div
-    style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;"
-  >
-    <h2 class="section-title" style="margin: 0;">
+  <section class="page-hero">
+    <p class="eyebrow">Daily file</p>
+    <h2 class="page-title">
       {new Date(`${date}T12:00:00Z`).toLocaleDateString("en-US", {
         weekday: "long",
         month: "long",
@@ -33,15 +32,22 @@ const next = new Date(new Date(`${date}T12:00:00Z`).getTime() + 86_400_000)
         year: "numeric",
       })}
     </h2>
-    <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
-      <a href={withBase(`/news/${prev}/`)} style="color: var(--muted); text-decoration: none;">Previous</a>
-      {date !== today ? (
-        <a href={withBase(`/news/${next}/`)} style="color: var(--muted); text-decoration: none;">Next</a>
-      ) : null}
-      {date !== today ? (
-        <a href={withBase("/")} style="color: var(--accent-alt); text-decoration: none;">Today</a>
-      ) : null}
+    <p class="page-summary">
+      A date-specific look at the stories collected for this edition of indieReader.
+    </p>
+    <div class="page-actions">
+      <a class="button-secondary" href={withBase(`/news/${prev}/`)}>Previous</a>
+      {date !== today ? <a class="button-secondary" href={withBase(`/news/${next}/`)}>Next</a> : null}
+      {date !== today ? <a class="button-primary" href={withBase("/")}>Today</a> : null}
     </div>
-  </div>
-  <NewsFeed stories={stories} />
+  </section>
+  <section class="section-card">
+    <div class="section-header">
+      <div>
+        <p class="section-kicker">Collected stories</p>
+        <h3 class="section-title">{stories.length} item{stories.length === 1 ? "" : "s"}</h3>
+      </div>
+    </div>
+    <NewsFeed stories={stories} />
+  </section>
 </BaseLayout>

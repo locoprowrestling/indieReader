@@ -4,6 +4,7 @@ interface Props {
 }
 
 const { title = "indieReader" } = Astro.props;
+const homeUrl = import.meta.env.BASE_URL;
 ---
 
 <!doctype html>
@@ -18,20 +19,27 @@ const { title = "indieReader" } = Astro.props;
     <title>{title} | indieReader</title>
     <style is:global>
       :root {
-        color-scheme: dark;
-        --bg: #120d12;
-        --bg-elevated: rgba(19, 18, 29, 0.86);
-        --panel: rgba(28, 24, 36, 0.92);
-        --panel-border: rgba(255, 255, 255, 0.09);
-        --panel-strong: rgba(255, 255, 255, 0.14);
-        --text: #f8f2ec;
-        --muted: #bdb1aa;
-        --subtle: #7b7177;
-        --accent: #ff6b2c;
-        --accent-soft: rgba(255, 107, 44, 0.16);
-        --accent-alt: #ffd166;
-        --shadow: 0 20px 80px rgba(0, 0, 0, 0.35);
-        --content-width: min(68rem, calc(100vw - 2rem));
+        color-scheme: light;
+        --bg: #f5f5f7;
+        --bg-alt: #fafafc;
+        --surface: rgba(255, 255, 255, 0.9);
+        --surface-solid: #ffffff;
+        --surface-dark: #1d1d1f;
+        --surface-dark-2: #272729;
+        --border: rgba(0, 0, 0, 0.08);
+        --border-strong: rgba(0, 0, 0, 0.12);
+        --text: #1d1d1f;
+        --text-muted: rgba(0, 0, 0, 0.8);
+        --text-subtle: rgba(0, 0, 0, 0.48);
+        --accent: #0071e3;
+        --accent-link: #0066cc;
+        --accent-bright: #2997ff;
+        --chip-bg: #fafafc;
+        --chip-active: #ededf2;
+        --shadow: 0 24px 60px rgba(0, 0, 0, 0.08);
+        --radius-panel: 32px;
+        --radius-card: 28px;
+        --content-width: min(980px, calc(100vw - 1.5rem));
       }
 
       *,
@@ -47,12 +55,19 @@ const { title = "indieReader" } = Astro.props;
       }
 
       body {
-        font-family: "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
+        font-family:
+          -apple-system,
+          BlinkMacSystemFont,
+          "SF Pro Display",
+          "SF Pro Text",
+          "Helvetica Neue",
+          Arial,
+          sans-serif;
         background:
-          radial-gradient(circle at top left, rgba(255, 107, 44, 0.28), transparent 34%),
-          radial-gradient(circle at top right, rgba(255, 209, 102, 0.18), transparent 30%),
-          linear-gradient(180deg, #0a070d 0%, #120d12 50%, #0b0810 100%);
+          radial-gradient(circle at top center, rgba(41, 151, 255, 0.12), transparent 28%),
+          linear-gradient(180deg, #ffffff 0%, #f5f5f7 26%, #fafafc 100%);
         color: var(--text);
+        line-height: 1.47;
       }
 
       a {
@@ -60,142 +75,312 @@ const { title = "indieReader" } = Astro.props;
       }
 
       .site-shell {
-        padding: 1rem 0 3rem;
+        padding: 0.9rem 0 4rem;
       }
 
       .site-header {
         width: var(--content-width);
         margin: 0 auto 1.5rem;
-        padding: 1.25rem 1.25rem 1rem;
-        border: 1px solid var(--panel-strong);
-        border-radius: 1.25rem;
-        background:
-          linear-gradient(135deg, rgba(255, 107, 44, 0.17), rgba(17, 20, 33, 0) 44%),
-          var(--bg-elevated);
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(14px);
+        padding: 0.65rem 0.85rem;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.72);
+        box-shadow: 0 8px 26px rgba(0, 0, 0, 0.08);
+        backdrop-filter: saturate(180%) blur(24px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        position: sticky;
+        top: 0.75rem;
+        z-index: 20;
       }
 
-      .site-kicker {
+      .site-brand {
         display: inline-flex;
         align-items: center;
-        gap: 0.55rem;
-        padding: 0.3rem 0.65rem;
-        border-radius: 999px;
-        background: var(--accent-soft);
-        color: var(--accent-alt);
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
+        gap: 0.85rem;
+        text-decoration: none;
       }
 
-      .site-kicker::before {
-        content: "";
-        width: 0.55rem;
-        height: 0.55rem;
+      .brand-mark {
+        width: 2rem;
+        height: 2rem;
         border-radius: 50%;
-        background: var(--accent);
-        box-shadow: 0 0 0 0.3rem rgba(255, 107, 44, 0.18);
+        display: grid;
+        place-items: center;
+        background: linear-gradient(180deg, #1d1d1f, #2a2a2d);
+        color: #ffffff;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: -0.04em;
       }
 
-      .site-title-row {
-        display: flex;
-        gap: 1rem;
-        align-items: end;
-        justify-content: space-between;
-        margin-top: 1rem;
+      .brand-lockup {
+        display: grid;
+        gap: 0.05rem;
       }
 
-      .site-title {
+      .brand-lockup strong {
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+
+      .brand-lockup span {
+        font-size: 0.78rem;
+        color: var(--text-subtle);
+      }
+
+      .site-note {
         margin: 0;
-        font-size: clamp(2rem, 5vw, 4.2rem);
-        line-height: 0.95;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-      }
-
-      .site-tagline {
-        max-width: 28rem;
-        margin: 0;
-        color: var(--muted);
-        line-height: 1.6;
+        color: var(--text-subtle);
+        font-size: 0.82rem;
       }
 
       main {
         width: var(--content-width);
         margin: 0 auto;
-        padding: 1.4rem;
-        border: 1px solid var(--panel-border);
-        border-radius: 1.25rem;
-        background: var(--panel);
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(16px);
+        display: grid;
+        gap: 1.4rem;
       }
 
       nav.tabs {
-        display: flex;
-        gap: 0.5rem;
+        display: inline-flex;
+        gap: 0.45rem;
         flex-wrap: wrap;
-        margin-bottom: 1.5rem;
+        width: fit-content;
+        max-width: 100%;
+        padding: 0.45rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        backdrop-filter: saturate(180%) blur(18px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
       }
 
       nav.tabs a {
-        padding: 0.7rem 1rem;
+        padding: 0.72rem 1.1rem;
         border-radius: 999px;
         border: 1px solid transparent;
-        color: var(--muted);
-        font-size: 0.92rem;
+        color: var(--text-subtle);
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: -0.01em;
         text-decoration: none;
         transition:
           color 160ms ease,
-          border-color 160ms ease,
           background-color 160ms ease,
+          border-color 160ms ease,
           transform 160ms ease;
       }
 
       nav.tabs a:hover {
         color: var(--text);
-        border-color: var(--panel-strong);
+        background: rgba(237, 237, 242, 0.7);
         transform: translateY(-1px);
       }
 
       nav.tabs a.active {
-        color: #141015;
-        background: linear-gradient(135deg, var(--accent-alt), var(--accent));
-        border-color: transparent;
-        font-weight: 700;
+        color: var(--text);
+        background: var(--chip-active);
+        border-color: rgba(0, 0, 0, 0.04);
+        font-weight: 600;
+      }
+
+      .page-hero {
+        position: relative;
+        overflow: hidden;
+        display: grid;
+        gap: 1.1rem;
+        padding: clamp(2rem, 5vw, 4rem);
+        border-radius: var(--radius-panel);
+        background:
+          radial-gradient(circle at top center, rgba(41, 151, 255, 0.18), transparent 30%),
+          linear-gradient(180deg, #ffffff 0%, #f7f7fa 100%);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+
+      .page-hero::after {
+        content: "";
+        position: absolute;
+        inset: auto auto -28% -12%;
+        width: 18rem;
+        height: 18rem;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(41, 151, 255, 0.14), transparent 68%);
+        pointer-events: none;
+      }
+
+      .page-hero--dark {
+        background:
+          radial-gradient(circle at top center, rgba(41, 151, 255, 0.22), transparent 28%),
+          linear-gradient(180deg, #1d1d1f 0%, #272729 100%);
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+
+      .page-hero--dark .eyebrow,
+      .page-hero--dark .page-summary {
+        color: rgba(255, 255, 255, 0.76);
+      }
+
+      .eyebrow {
+        margin: 0;
+        color: var(--accent-link);
+        font-size: 0.84rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      .page-title {
+        margin: 0 auto;
+        max-width: 13ch;
+        font-size: clamp(2.8rem, 8vw, 4.8rem);
+        font-weight: 600;
+        letter-spacing: -0.05em;
+        line-height: 1.05;
+      }
+
+      .page-summary {
+        max-width: 44rem;
+        margin: 0 auto;
+        color: var(--text-muted);
+        font-size: 1.0625rem;
+        line-height: 1.47;
+      }
+
+      .page-actions {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .button-primary,
+      .button-secondary,
+      .inline-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        min-height: 2.875rem;
+        padding: 0.7rem 1.2rem;
+        border-radius: 999px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+        text-decoration: none;
+        transition:
+          background-color 160ms ease,
+          background-color 160ms ease,
+          color 160ms ease,
+          transform 160ms ease;
+      }
+
+      .button-primary {
+        background: var(--accent);
+        color: #ffffff;
+      }
+
+      .button-primary:hover,
+      .button-secondary:hover,
+      .inline-link:hover {
+        transform: translateY(-1px);
+      }
+
+      .button-secondary {
+        background: var(--chip-bg);
+        color: var(--text);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+      }
+
+      .inline-link {
+        min-height: auto;
+        padding: 0;
+        color: var(--accent-link);
+      }
+
+      .section-card {
+        padding: clamp(1.35rem, 2vw, 2rem);
+        border-radius: var(--radius-panel);
+        background: var(--surface);
+        border: 1px solid rgba(255, 255, 255, 0.85);
+        box-shadow: var(--shadow);
+      }
+
+      .section-card--dark {
+        background: linear-gradient(180deg, #1d1d1f 0%, #272729 100%);
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+
+      .section-card--dark .section-kicker,
+      .section-card--dark .section-meta {
+        color: rgba(255, 255, 255, 0.72);
+      }
+
+      .section-header {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.25rem;
+      }
+
+      .section-kicker {
+        margin: 0 0 0.35rem;
+        color: var(--text-subtle);
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
       }
 
       .section-title {
-        margin: 0 0 1rem;
-        color: var(--muted);
-        font-size: 0.95rem;
+        margin: 0;
+        color: var(--text);
+        font-size: clamp(1.9rem, 4vw, 2.6rem);
         font-weight: 600;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
+        letter-spacing: -0.04em;
+        line-height: 1.1;
+      }
+
+      .section-meta {
+        margin: 0;
+        color: var(--text-subtle);
+        font-size: 0.95rem;
       }
 
       .empty-state {
         padding: 3rem 1.25rem;
         text-align: center;
-        color: var(--subtle);
+        color: var(--text-subtle);
+        background: var(--surface-solid);
+        border-radius: var(--radius-card);
+        border: 1px solid var(--border);
       }
 
       @media (max-width: 720px) {
-        .site-shell {
-          padding-top: 0.75rem;
-        }
-
-        .site-header,
-        main {
-          width: min(100vw - 1rem, 68rem);
-          border-radius: 1rem;
-        }
-
-        .site-title-row {
+        .site-header {
+          width: min(100vw - 1rem, 980px);
+          border-radius: 26px;
           align-items: start;
           flex-direction: column;
+        }
+
+        .site-note {
+          display: none;
+        }
+
+        .page-title {
+          max-width: 100%;
+        }
+
+        .section-header {
+          align-items: start;
         }
       }
     </style>
@@ -203,13 +388,14 @@ const { title = "indieReader" } = Astro.props;
   <body>
     <div class="site-shell">
       <header class="site-header">
-        <span class="site-kicker">Independent wrestling desk</span>
-        <div class="site-title-row">
-          <h1 class="site-title">indieReader</h1>
-          <p class="site-tagline">
-            A static front page for the promotions, cards, signings, and live-scene shifts that matter outside the mainstream bubble.
-          </p>
-        </div>
+        <a class="site-brand" href={homeUrl}>
+          <span class="brand-mark">ir</span>
+          <span class="brand-lockup">
+            <strong>indieReader</strong>
+            <span>Independent wrestling, editorially arranged.</span>
+          </span>
+        </a>
+        <p class="site-note">Clean lines, generous space, and a calmer read on the indie scene.</p>
       </header>
       <main>
         <slot />

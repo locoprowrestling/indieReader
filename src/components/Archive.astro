@@ -28,18 +28,22 @@ const dates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
 
   .archive-day {
     display: grid;
-    gap: 0.4rem;
+    gap: 0.7rem;
+    padding: 1.35rem;
+    border-radius: var(--radius-panel);
+    background: linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
+    border: 1px solid rgba(255, 255, 255, 0.88);
+    box-shadow: var(--shadow);
   }
 
   .archive-day h3 {
     margin: 0;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--panel-border);
-    color: var(--muted);
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-subtle);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
   .archive-link {
@@ -47,18 +51,20 @@ const dates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
     align-items: center;
     gap: 0.8rem;
     padding: 0.85rem 0.95rem;
-    border: 1px solid var(--panel-border);
-    border-radius: 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 24px;
     text-decoration: none;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(250, 250, 252, 0.86);
     transition:
       border-color 180ms ease,
-      transform 180ms ease;
+      transform 180ms ease,
+      box-shadow 180ms ease;
   }
 
   .archive-link:hover {
-    border-color: rgba(255, 209, 102, 0.42);
+    border-color: rgba(0, 113, 227, 0.18);
     transform: translateY(-1px);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
   }
 
   .archive-dot {
@@ -69,20 +75,21 @@ const dates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
   }
 
   .archive-dot.morning {
-    background: var(--accent-alt);
+    background: var(--accent);
   }
 
   .archive-dot.evening {
-    background: #77b7ff;
+    background: var(--surface-dark-2);
   }
 
   .archive-title {
     font-weight: 600;
+    letter-spacing: -0.02em;
   }
 
   .archive-meta {
     margin-left: auto;
-    color: var(--subtle);
+    color: var(--text-subtle);
     font-size: 0.8rem;
   }
 
