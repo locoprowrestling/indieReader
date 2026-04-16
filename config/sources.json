@@ -1,8 +1,8 @@
 {
   "rss": [
-    "https://www.pwinsider.com/rss.php",
-    "https://www.fightful.com/wrestling/rss.xml",
-    "https://www.f4wonline.com/rss.xml"
+    "http://feeds.feedburner.com/pwinsider",
+    "https://www.fightful.com/feed/",
+    "https://www.f4wonline.com/feed/"
   ],
   "scrape": [
     {

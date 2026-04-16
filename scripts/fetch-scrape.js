@@ -39,6 +39,7 @@ export async function scrapeCagematch(scrapeConfig) {
     headers: {
       "User-Agent": "indieReader/1.0 (+https://github.com/locoprowrestling/indieReader)",
     },
+    signal: AbortSignal.timeout(15000),
   });
 
   if (!response.ok) {

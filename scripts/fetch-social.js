@@ -53,7 +53,9 @@ export async function fetchYouTube(channelIds) {
         maxResults: "5",
         type: "video",
       });
-      const response = await fetch(`https://www.googleapis.com/youtube/v3/search?${params}`);
+      const response = await fetch(`https://www.googleapis.com/youtube/v3/search?${params}`, {
+        signal: AbortSignal.timeout(15000),
+      });
       if (!response.ok) {
         throw new Error(`YouTube API ${response.status}`);
       }
@@ -91,7 +93,9 @@ export async function fetchFacebook(pageIds) {
         limit: "5",
         access_token: process.env.FACEBOOK_ACCESS_TOKEN,
       });
-      const response = await fetch(`https://graph.facebook.com/v19.0/${pageId}/posts?${params}`);
+      const response = await fetch(`https://graph.facebook.com/v19.0/${pageId}/posts?${params}`, {
+        signal: AbortSignal.timeout(15000),
+      });
       if (!response.ok) {
         throw new Error(`Facebook API ${response.status}`);
       }
@@ -133,7 +137,9 @@ export async function fetchInstagram(accountIds) {
         limit: "5",
         access_token: process.env.INSTAGRAM_ACCESS_TOKEN,
       });
-      const response = await fetch(`https://graph.instagram.com/${accountId}/media?${params}`);
+      const response = await fetch(`https://graph.instagram.com/${accountId}/media?${params}`, {
+        signal: AbortSignal.timeout(15000),
+      });
       if (!response.ok) {
         throw new Error(`Instagram API ${response.status}`);
       }
