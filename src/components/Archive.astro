@@ -124,9 +124,7 @@ const dates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
               <a class="archive-link" href={withBase(`/posts/${post.slug}/`)}>
                 <span class={`archive-dot ${post.data.type}`}></span>
                 <span class="archive-title">{post.data.title}</span>
-                <span class="archive-meta">
-                  {post.data.story_count} stories · {post.data.ai_provider}
-                </span>
+                <span class="archive-meta">{post.data.story_count} stories</span>
               </a>
             ))}
         </section>

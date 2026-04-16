@@ -28,7 +28,6 @@ const rendered = latest ? await render(latest) : null;
         time={latest.data.time}
         type={latest.data.type}
         story_count={latest.data.story_count}
-        ai_provider={latest.data.ai_provider}
       >
         <rendered.Content />
       </BlogPost>
