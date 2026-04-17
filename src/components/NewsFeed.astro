@@ -46,10 +46,10 @@ function platformLabel(platform: string) {
     display: grid;
     gap: 1rem;
     padding: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--panel-border);
     border-radius: var(--radius-card);
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(247, 247, 250, 0.92)),
+      linear-gradient(180deg, var(--panel-gradient-start), var(--panel-gradient-end)),
       var(--surface-solid);
     box-shadow: var(--shadow);
     transition:
@@ -73,7 +73,7 @@ function platformLabel(platform: string) {
 
   .story:hover {
     transform: translateY(-2px);
-    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--shadow-hover);
   }
 
   .story-meta {

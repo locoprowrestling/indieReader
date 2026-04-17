@@ -29,8 +29,8 @@ const editionLabel = type === "morning" ? "Morning Edition" : "Evening Edition";
     gap: 1.75rem;
     padding: clamp(1.6rem, 3vw, 3rem);
     border-radius: var(--radius-panel);
-    background: linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
-    border: 1px solid rgba(255, 255, 255, 0.88);
+    background: linear-gradient(180deg, var(--panel-gradient-start) 0%, var(--panel-gradient-end) 100%);
+    border: 1px solid var(--panel-border);
     box-shadow: var(--shadow);
   }
 
@@ -61,7 +61,7 @@ const editionLabel = type === "morning" ? "Morning Edition" : "Evening Edition";
     gap: 0.45rem;
     padding: 0.34rem 0.72rem;
     border-radius: 999px;
-    background: rgba(0, 113, 227, 0.08);
+    background: var(--toggle-icon-bg);
     color: var(--accent-link);
     font-weight: 600;
   }

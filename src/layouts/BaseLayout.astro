@@ -17,6 +17,28 @@ const homeUrl = import.meta.env.BASE_URL;
       content="Daily indie wrestling news and editorial coverage."
     />
     <title>{title} | indieReader™</title>
+    <script is:inline>
+      (() => {
+        const storageKey = "indieReader-theme";
+        let theme = "light";
+
+        try {
+          const storedTheme = window.localStorage.getItem(storageKey);
+          if (storedTheme === "light" || storedTheme === "dark") {
+            theme = storedTheme;
+          } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            theme = "dark";
+          }
+        } catch {
+          if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            theme = "dark";
+          }
+        }
+
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script>
     <style is:global>
       :root {
         color-scheme: light;
@@ -37,9 +59,78 @@ const homeUrl = import.meta.env.BASE_URL;
         --chip-bg: #fafafc;
         --chip-active: #ededf2;
         --shadow: 0 24px 60px rgba(0, 0, 0, 0.08);
+        --shadow-hover: 0 30px 70px rgba(0, 0, 0, 0.12);
+        --shadow-soft: 0 16px 36px rgba(0, 0, 0, 0.08);
         --radius-panel: 32px;
         --radius-card: 28px;
         --content-width: min(980px, calc(100vw - 1.5rem));
+        --page-radial: rgba(41, 151, 255, 0.12);
+        --page-gradient-start: #ffffff;
+        --page-gradient-mid: #f5f5f7;
+        --page-gradient-end: #fafafc;
+        --glass-bg: rgba(255, 255, 255, 0.72);
+        --glass-bg-soft: rgba(255, 255, 255, 0.68);
+        --glass-border: rgba(0, 0, 0, 0.06);
+        --tab-bg: rgba(255, 255, 255, 0.7);
+        --tab-hover-bg: rgba(237, 237, 242, 0.7);
+        --hero-radial: rgba(41, 151, 255, 0.18);
+        --hero-start: #ffffff;
+        --hero-end: #f7f7fa;
+        --hero-border: rgba(255, 255, 255, 0.9);
+        --hero-orb: rgba(41, 151, 255, 0.14);
+        --panel-gradient-start: rgba(255, 255, 255, 0.95);
+        --panel-gradient-end: rgba(247, 247, 250, 0.92);
+        --panel-border: rgba(255, 255, 255, 0.88);
+        --accent-soft: rgba(0, 113, 227, 0.18);
+        --toggle-bg: rgba(250, 250, 252, 0.84);
+        --toggle-hover-bg: rgba(237, 237, 242, 0.88);
+        --toggle-border: rgba(0, 0, 0, 0.08);
+        --toggle-icon-bg: rgba(0, 113, 227, 0.12);
+      }
+
+      :root[data-theme="dark"] {
+        color-scheme: dark;
+        --bg: #0f1622;
+        --bg-alt: #151d2b;
+        --surface: rgba(19, 27, 40, 0.9);
+        --surface-solid: #141b28;
+        --surface-dark: #090d14;
+        --surface-dark-2: #1b2535;
+        --border: rgba(255, 255, 255, 0.08);
+        --border-strong: rgba(255, 255, 255, 0.12);
+        --text: #eff3fa;
+        --text-muted: rgba(255, 255, 255, 0.82);
+        --text-subtle: rgba(255, 255, 255, 0.58);
+        --accent: #4aa8ff;
+        --accent-link: #7fc2ff;
+        --accent-bright: #b7deff;
+        --chip-bg: rgba(255, 255, 255, 0.07);
+        --chip-active: rgba(255, 255, 255, 0.11);
+        --shadow: 0 28px 70px rgba(0, 0, 0, 0.42);
+        --shadow-hover: 0 36px 80px rgba(0, 0, 0, 0.5);
+        --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.32);
+        --page-radial: rgba(74, 168, 255, 0.18);
+        --page-gradient-start: #060b12;
+        --page-gradient-mid: #0c131e;
+        --page-gradient-end: #141c29;
+        --glass-bg: rgba(12, 18, 28, 0.74);
+        --glass-bg-soft: rgba(12, 18, 28, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --tab-bg: rgba(10, 15, 23, 0.72);
+        --tab-hover-bg: rgba(255, 255, 255, 0.06);
+        --hero-radial: rgba(74, 168, 255, 0.22);
+        --hero-start: #121a28;
+        --hero-end: #181f2f;
+        --hero-border: rgba(255, 255, 255, 0.08);
+        --hero-orb: rgba(74, 168, 255, 0.18);
+        --panel-gradient-start: rgba(24, 32, 47, 0.96);
+        --panel-gradient-end: rgba(18, 24, 36, 0.92);
+        --panel-border: rgba(255, 255, 255, 0.08);
+        --accent-soft: rgba(127, 194, 255, 0.18);
+        --toggle-bg: rgba(255, 255, 255, 0.06);
+        --toggle-hover-bg: rgba(255, 255, 255, 0.1);
+        --toggle-border: rgba(255, 255, 255, 0.08);
+        --toggle-icon-bg: rgba(127, 194, 255, 0.12);
       }
 
       *,
@@ -64,8 +155,13 @@ const homeUrl = import.meta.env.BASE_URL;
           Arial,
           sans-serif;
         background:
-          radial-gradient(circle at top center, rgba(41, 151, 255, 0.12), transparent 28%),
-          linear-gradient(180deg, #ffffff 0%, #f5f5f7 26%, #fafafc 100%);
+          radial-gradient(circle at top center, var(--page-radial), transparent 28%),
+          linear-gradient(
+            180deg,
+            var(--page-gradient-start) 0%,
+            var(--page-gradient-mid) 26%,
+            var(--page-gradient-end) 100%
+          );
         color: var(--text);
         line-height: 1.47;
       }
@@ -82,9 +178,9 @@ const homeUrl = import.meta.env.BASE_URL;
         width: var(--content-width);
         margin: 0 auto 1.5rem;
         padding: 0.65rem 0.85rem;
-        border: 1px solid rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--glass-border);
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.72);
+        background: var(--glass-bg);
         box-shadow: 0 8px 26px rgba(0, 0, 0, 0.08);
         backdrop-filter: saturate(180%) blur(24px);
         display: flex;
@@ -138,6 +234,57 @@ const homeUrl = import.meta.env.BASE_URL;
         font-size: 0.82rem;
       }
 
+      .site-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-left: auto;
+      }
+
+      .theme-toggle {
+        appearance: none;
+        border: 1px solid var(--toggle-border);
+        background: var(--toggle-bg);
+        color: var(--text);
+        min-height: 2.5rem;
+        padding: 0.36rem 0.7rem 0.36rem 0.42rem;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        font: inherit;
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        cursor: pointer;
+        transition:
+          background-color 160ms ease,
+          border-color 160ms ease,
+          transform 160ms ease,
+          color 160ms ease;
+      }
+
+      .theme-toggle:hover {
+        background: var(--toggle-hover-bg);
+        transform: translateY(-1px);
+      }
+
+      .theme-toggle-icon {
+        width: 1.6rem;
+        height: 1.6rem;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        background: var(--toggle-icon-bg);
+        color: var(--accent-link);
+        font-size: 0.82rem;
+        line-height: 1;
+      }
+
+      .theme-toggle-label {
+        white-space: nowrap;
+      }
+
       main {
         width: var(--content-width);
         margin: 0 auto;
@@ -150,8 +297,8 @@ const homeUrl = import.meta.env.BASE_URL;
         margin: 1.5rem auto 0;
         padding: 1rem 1.25rem;
         border-radius: 24px;
-        background: rgba(255, 255, 255, 0.68);
-        border: 1px solid rgba(0, 0, 0, 0.06);
+        background: var(--glass-bg-soft);
+        border: 1px solid var(--glass-border);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
         backdrop-filter: saturate(180%) blur(18px);
         display: flex;
@@ -186,8 +333,8 @@ const homeUrl = import.meta.env.BASE_URL;
         max-width: 100%;
         padding: 0.45rem;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.7);
-        border: 1px solid rgba(0, 0, 0, 0.06);
+        background: var(--tab-bg);
+        border: 1px solid var(--glass-border);
         backdrop-filter: saturate(180%) blur(18px);
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
       }
@@ -210,7 +357,7 @@ const homeUrl = import.meta.env.BASE_URL;
 
       nav.tabs a:hover {
         color: var(--text);
-        background: rgba(237, 237, 242, 0.7);
+        background: var(--tab-hover-bg);
         transform: translateY(-1px);
       }
 
@@ -229,9 +376,9 @@ const homeUrl = import.meta.env.BASE_URL;
         padding: clamp(2rem, 5vw, 4rem);
         border-radius: var(--radius-panel);
         background:
-          radial-gradient(circle at top center, rgba(41, 151, 255, 0.18), transparent 30%),
-          linear-gradient(180deg, #ffffff 0%, #f7f7fa 100%);
-        border: 1px solid rgba(255, 255, 255, 0.9);
+          radial-gradient(circle at top center, var(--hero-radial), transparent 30%),
+          linear-gradient(180deg, var(--hero-start) 0%, var(--hero-end) 100%);
+        border: 1px solid var(--hero-border);
         box-shadow: var(--shadow);
         text-align: center;
       }
@@ -243,7 +390,7 @@ const homeUrl = import.meta.env.BASE_URL;
         width: 18rem;
         height: 18rem;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(41, 151, 255, 0.14), transparent 68%);
+        background: radial-gradient(circle, var(--hero-orb), transparent 68%);
         pointer-events: none;
       }
 
@@ -327,7 +474,7 @@ const homeUrl = import.meta.env.BASE_URL;
       .button-secondary {
         background: var(--chip-bg);
         color: var(--text);
-        border: 1px solid rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--glass-border);
       }
 
       .inline-link {
@@ -340,7 +487,7 @@ const homeUrl = import.meta.env.BASE_URL;
         padding: clamp(1.35rem, 2vw, 2rem);
         border-radius: var(--radius-panel);
         background: var(--surface);
-        border: 1px solid rgba(255, 255, 255, 0.85);
+        border: 1px solid var(--panel-border);
         box-shadow: var(--shadow);
       }
 
@@ -404,6 +551,11 @@ const homeUrl = import.meta.env.BASE_URL;
           flex-direction: column;
         }
 
+        .site-header-actions {
+          width: 100%;
+          justify-content: flex-end;
+        }
+
         .site-note {
           display: none;
         }
@@ -428,7 +580,19 @@ const homeUrl = import.meta.env.BASE_URL;
             <span>News and editorial from the indie scene.</span>
           </span>
         </a>
-        <p class="site-note">Cards, signings, and movement across independent wrestling.</p>
+        <div class="site-header-actions">
+          <p class="site-note">Cards, signings, and movement across independent wrestling.</p>
+          <button
+            class="theme-toggle"
+            type="button"
+            data-theme-toggle
+            aria-pressed="false"
+            aria-label="Switch to dark mode"
+          >
+            <span class="theme-toggle-icon" data-theme-icon aria-hidden="true">☀</span>
+            <span class="theme-toggle-label" data-theme-label>Light mode</span>
+          </button>
+        </div>
       </header>
       <main>
         <slot />
@@ -441,5 +605,90 @@ const homeUrl = import.meta.env.BASE_URL;
         </p>
       </footer>
     </div>
+    <script is:inline>
+      (() => {
+        const storageKey = "indieReader-theme";
+        const root = document.documentElement;
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+        const getStoredTheme = () => {
+          try {
+            const storedTheme = window.localStorage.getItem(storageKey);
+            return storedTheme === "light" || storedTheme === "dark" ? storedTheme : null;
+          } catch {
+            return null;
+          }
+        };
+
+        const getPreferredTheme = () => {
+          const storedTheme = getStoredTheme();
+          if (storedTheme) {
+            return storedTheme;
+          }
+
+          return mediaQuery.matches ? "dark" : "light";
+        };
+
+        const applyTheme = (theme) => {
+          root.dataset.theme = theme;
+          root.style.colorScheme = theme;
+
+          document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+            const nextTheme = theme === "dark" ? "light" : "dark";
+            const themeLabel = theme === "dark" ? "Dark mode" : "Light mode";
+            const themeIcon = theme === "dark" ? "☾" : "☀";
+
+            button.setAttribute("aria-pressed", String(theme === "dark"));
+            button.setAttribute("aria-label", `Switch to ${nextTheme} mode`);
+
+            const label = button.querySelector("[data-theme-label]");
+            if (label) {
+              label.textContent = themeLabel;
+            }
+
+            const icon = button.querySelector("[data-theme-icon]");
+            if (icon) {
+              icon.textContent = themeIcon;
+            }
+          });
+        };
+
+        const bindThemeToggle = () => {
+          document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+            if (button.dataset.bound === "true") {
+              return;
+            }
+
+            button.dataset.bound = "true";
+            button.addEventListener("click", () => {
+              const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
+
+              try {
+                window.localStorage.setItem(storageKey, nextTheme);
+              } catch {
+                // Ignore storage failures and still update the live theme.
+              }
+
+              applyTheme(nextTheme);
+            });
+          });
+        };
+
+        const handlePreferenceChange = (event) => {
+          if (!getStoredTheme()) {
+            applyTheme(event.matches ? "dark" : "light");
+          }
+        };
+
+        applyTheme(getPreferredTheme());
+        bindThemeToggle();
+
+        if (typeof mediaQuery.addEventListener === "function") {
+          mediaQuery.addEventListener("change", handlePreferenceChange);
+        } else if (typeof mediaQuery.addListener === "function") {
+          mediaQuery.addListener(handlePreferenceChange);
+        }
+      })();
+    </script>
   </body>
 </html>
