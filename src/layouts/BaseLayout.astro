@@ -247,11 +247,12 @@ const homeUrl = import.meta.env.BASE_URL;
         background: var(--toggle-bg);
         color: var(--text);
         min-height: 2.5rem;
-        padding: 0.36rem 0.7rem 0.36rem 0.42rem;
+        min-width: 2.5rem;
+        padding: 0.36rem;
         border-radius: 999px;
         display: inline-flex;
         align-items: center;
-        gap: 0.55rem;
+        justify-content: center;
         font: inherit;
         font-size: 0.82rem;
         font-weight: 600;
@@ -279,10 +280,6 @@ const homeUrl = import.meta.env.BASE_URL;
         color: var(--accent-link);
         font-size: 0.82rem;
         line-height: 1;
-      }
-
-      .theme-toggle-label {
-        white-space: nowrap;
       }
 
       main {
@@ -588,9 +585,9 @@ const homeUrl = import.meta.env.BASE_URL;
             data-theme-toggle
             aria-pressed="false"
             aria-label="Switch to dark mode"
+            title="Switch to dark mode"
           >
             <span class="theme-toggle-icon" data-theme-icon aria-hidden="true">☀</span>
-            <span class="theme-toggle-label" data-theme-label>Light mode</span>
           </button>
         </div>
       </header>
@@ -635,16 +632,12 @@ const homeUrl = import.meta.env.BASE_URL;
 
           document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
             const nextTheme = theme === "dark" ? "light" : "dark";
-            const themeLabel = theme === "dark" ? "Dark mode" : "Light mode";
             const themeIcon = theme === "dark" ? "☾" : "☀";
+            const buttonLabel = `Switch to ${nextTheme} mode`;
 
             button.setAttribute("aria-pressed", String(theme === "dark"));
-            button.setAttribute("aria-label", `Switch to ${nextTheme} mode`);
-
-            const label = button.querySelector("[data-theme-label]");
-            if (label) {
-              label.textContent = themeLabel;
-            }
+            button.setAttribute("aria-label", buttonLabel);
+            button.setAttribute("title", buttonLabel);
 
             const icon = button.querySelector("[data-theme-icon]");
             if (icon) {
