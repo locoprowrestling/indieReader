@@ -14,6 +14,12 @@ export interface Story {
 const DATA_DIR = path.resolve("data");
 export const NEWS_BEGINNING_PATH = "/news/beginning/";
 
+function sortStories(stories: Story[]): Story[] {
+  return stories.sort(
+    (a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime(),
+  );
+}
+
 export function loadStoriesForDate(date: string): Story[] {
   const dataPath = path.resolve(`data/news-${date}.json`);
   if (!fs.existsSync(dataPath)) {
@@ -21,16 +27,13 @@ export function loadStoriesForDate(date: string): Story[] {
   }
 
   const stories = JSON.parse(fs.readFileSync(dataPath, "utf-8")) as Story[];
-  return stories.sort(
-    (a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime(),
-  );
+  return sortStories(stories);
 }
 
 export function loadLatestStories(): Story[] {
-  const today = new Date().toISOString().slice(0, 10);
-  const todayStories = loadStoriesForDate(today);
-  if (todayStories.length > 0) {
-    return todayStories;
+  const latestDate = listNewsDates()[0];
+  if (latestDate) {
+    return loadStoriesForDate(latestDate);
   }
 
   if (!import.meta.env.DEV) {
@@ -43,9 +46,7 @@ export function loadLatestStories(): Story[] {
   }
 
   const stories = JSON.parse(fs.readFileSync(fixturePath, "utf-8")) as Story[];
-  return stories.sort(
-    (a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime(),
-  );
+  return sortStories(stories);
 }
 
 export function listNewsDates(): string[] {

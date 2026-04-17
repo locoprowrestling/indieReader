@@ -1,7 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { getNewsNavigation, listNewsDates, loadStoriesForDate } from "../src/lib/news.ts";
+import {
+  getNewsNavigation,
+  listNewsDates,
+  loadLatestStories,
+  loadStoriesForDate,
+} from "../src/lib/news.ts";
 
 const TEST_DATES = ["2099-01-03", "2099-01-02", "2099-01-01"];
 
@@ -73,6 +78,16 @@ afterEach(() => {
 describe("loadStoriesForDate", () => {
   it("sorts stories newest first for a given date", () => {
     const stories = loadStoriesForDate("2099-01-03");
+
+    expect(stories).toHaveLength(2);
+    expect(stories[0].title).toBe("Newest story");
+    expect(stories[1].title).toBe("Older same-day story");
+  });
+});
+
+describe("loadLatestStories", () => {
+  it("loads stories from the newest available news file", () => {
+    const stories = loadLatestStories();
 
     expect(stories).toHaveLength(2);
     expect(stories[0].title).toBe("Newest story");
