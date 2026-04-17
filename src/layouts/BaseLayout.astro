@@ -145,6 +145,39 @@ const homeUrl = import.meta.env.BASE_URL;
         gap: 1.4rem;
       }
 
+      .site-footer {
+        width: var(--content-width);
+        margin: 1.5rem auto 0;
+        padding: 1rem 1.25rem;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.68);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        backdrop-filter: saturate(180%) blur(18px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.9rem;
+        flex-wrap: wrap;
+      }
+
+      .site-footer-copy {
+        margin: 0;
+        color: var(--text-subtle);
+        font-size: 0.82rem;
+        line-height: 1.5;
+      }
+
+      .site-footer-link {
+        color: var(--accent-link);
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .site-footer-link:hover {
+        color: var(--accent);
+      }
+
       nav.tabs {
         display: inline-flex;
         gap: 0.45rem;
@@ -400,6 +433,13 @@ const homeUrl = import.meta.env.BASE_URL;
       <main>
         <slot />
       </main>
+      <footer class="site-footer">
+        <p class="site-footer-copy">
+          indieReader™ ©2026
+          <a class="site-footer-link" href="https://www.locopro.pw/">LoCo Pro Wrestling LLC</a>.
+          All Rights Reserved.
+        </p>
+      </footer>
     </div>
   </body>
 </html>
