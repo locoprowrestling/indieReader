@@ -20,7 +20,7 @@ jobs:
         id: schedule
         run: |
           HOUR="$(TZ=America/Denver date +%H)"
-          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" || "$HOUR" == "07" ]]; then
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" || "$HOUR" == "07" || "$HOUR" == "08" ]]; then
             echo "should_run=true" >> "$GITHUB_OUTPUT"
           else
             echo "should_run=false" >> "$GITHUB_OUTPUT"
