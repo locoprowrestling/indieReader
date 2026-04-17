@@ -3,7 +3,7 @@ interface Props {
   title?: string;
 }
 
-const { title = "indieReader" } = Astro.props;
+const { title = "indieReader™" } = Astro.props;
 const homeUrl = import.meta.env.BASE_URL;
 ---
 
@@ -16,7 +16,7 @@ const homeUrl = import.meta.env.BASE_URL;
       name="description"
       content="Daily indie wrestling news and editorial coverage."
     />
-    <title>{title} | indieReader</title>
+    <title>{title} | indieReader™</title>
     <style is:global>
       :root {
         color-scheme: light;
@@ -424,7 +424,7 @@ const homeUrl = import.meta.env.BASE_URL;
         <a class="site-brand" href={homeUrl}>
           <span class="brand-mark">ir</span>
           <span class="brand-lockup">
-            <strong>indieReader</strong>
+            <strong>indieReader™</strong>
             <span>News and editorial from the indie scene.</span>
           </span>
         </a>
