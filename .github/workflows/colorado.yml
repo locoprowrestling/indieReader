@@ -1,8 +1,8 @@
-name: Generate Morning Post
+name: Generate Colorado Post
 
 on:
   schedule:
-    - cron: "0 13,14 * * *"
+    - cron: "0 18,19 * * *"
   workflow_dispatch:
 
 permissions:
@@ -16,11 +16,11 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
-      - name: Check Denver morning window
+      - name: Check Denver noon window
         id: schedule
         run: |
           HOUR="$(TZ=America/Denver date +%H)"
-          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" || "$HOUR" == "07" || "$HOUR" == "08" ]]; then
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" || "$HOUR" == "12" ]]; then
             echo "should_run=true" >> "$GITHUB_OUTPUT"
           else
             echo "should_run=false" >> "$GITHUB_OUTPUT"
@@ -34,24 +34,24 @@ jobs:
           cache: npm
       - run: npm ci
         if: steps.schedule.outputs.should_run == 'true'
-      - name: Generate morning blog post
+      - name: Generate Colorado blog post
         if: steps.schedule.outputs.should_run == 'true'
-        run: node scripts/run-generate.js morning
+        run: node scripts/run-generate.js colorado
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
-      - name: Commit post and updated state
+      - name: Commit post
         if: steps.schedule.outputs.should_run == 'true'
         run: |
           git config user.name "indieReader Bot"
           git config user.email "noreply@indiereader"
-          git add src/content/posts/ data/state.json
-          git diff --staged --quiet || (git commit -m "feat: morning post $(date -u +%Y-%m-%d)" && git push)
+          git add src/content/posts/
+          git diff --staged --quiet || (git commit -m "feat: colorado post $(date -u +%Y-%m-%d)" && git push)
       - name: Tweet new post
         if: steps.schedule.outputs.should_run == 'true'
         run: |
           if git diff HEAD~1 --name-only | grep src/content/posts; then
-            POST_PATH="src/content/posts/$(TZ=America/Denver date +%Y-%m-%d)-morning.md"
+            POST_PATH="src/content/posts/$(TZ=America/Denver date +%Y-%m-%d)-colorado.md"
             node scripts/post-tweet.js "$POST_PATH"
           else
             echo "No new post committed — skipping tweet."
