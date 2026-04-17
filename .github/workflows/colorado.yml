@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "0 18,19 * * 5"
   workflow_dispatch:
+    inputs:
+      skip_tweet:
+        description: "Skip tweeting after post generation"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -48,7 +53,7 @@ jobs:
           git add src/content/posts/
           git diff --staged --quiet || (git commit -m "feat: colorado post $(date -u +%Y-%m-%d)" && git push)
       - name: Tweet new post
-        if: steps.schedule.outputs.should_run == 'true'
+        if: steps.schedule.outputs.should_run == 'true' && inputs.skip_tweet != true
         run: |
           if git diff HEAD~1 --name-only | grep src/content/posts; then
             POST_PATH="src/content/posts/$(TZ=America/Denver date +%Y-%m-%d)-colorado.md"
