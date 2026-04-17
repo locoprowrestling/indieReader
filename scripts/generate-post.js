@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import OpenAI from "openai";
 
 const DENVER_TIME_ZONE = "America/Denver";
@@ -11,13 +12,47 @@ Focus on what matters to indie wrestling fans: talent movement, promotion moment
 
 Do not discuss WWE, AEW, TNA, ROH, or NJPW unless a story explicitly involves their direct impact on the indie scene.`;
 
-const COLORADO_SYSTEM_PROMPT = `You are a Colorado indie wrestling enthusiast writing a regional column for indieReader, covering the local pro wrestling scene along the Front Range and across the state.
+const LOCO_VOICE_DOC_URL = new URL("../config/loco-voice.md", import.meta.url);
+
+export const LOCO_STATIC_BLURB = `\n\n---\n\n*The Friday Colorado edition of indieReader is published by **LoCo Pro Wrestling**, a Longmont-based independent wrestling promotion running out of the historic Dickens Opera House. Upcoming cards, roster, and tickets: [locopro.pw](https://www.locopro.pw/) · [YouTube](https://www.youtube.com/channel/UCf3NpWaiORJKUdBi0GI1u9w).*\n`;
+
+function readLocoVoiceDoc() {
+  const locoVoicePath = fileURLToPath(LOCO_VOICE_DOC_URL);
+  try {
+    return fs.readFileSync(locoVoicePath, "utf8");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(
+      `Failed to read LoCo voice doc at ${locoVoicePath}: ${message}. ` +
+        `This file is required to generate the Colorado edition.`,
+    );
+  }
+}
+
+export function buildColoradoSystemPrompt(voiceDoc = readLocoVoiceDoc()) {
+  return `You are writing the Friday Colorado edition of indieReader, a site published by LoCo Pro Wrestling. You cover the full Colorado indie wrestling scene fairly, but you write as a LoCo-aligned insider — LoCo is not a competitor you describe from outside, it is home.
 
 Write flowing narrative prose in Markdown. Do not output bullets, frontmatter, or a title. Start with a strong opening sentence.
 
-Focus on what matters to Colorado fans: upcoming shows, local promotions (Rocky Mountain Pro, Primos Premier Wrestling, WrestleSphere, High Plains Wrestling, and others), talent working the CO scene, venue announcements, and results. Treat upcoming event listings as legitimate news worth covering.
+Focus on what matters to Colorado fans: upcoming shows, local promotions (LoCo Pro Wrestling, Rocky Mountain Pro, Primos Premier Wrestling, and other Colorado promotions), talent working the CO scene, venue announcements, and results. Treat upcoming event listings as legitimate news worth covering. Write with the warmth of someone who drives up and down the Front Range to see a show in an opera house, a ballroom, or a high school gym.
 
-Write with the enthusiasm of someone who drives two hours to see a show in a high school gym.`;
+LEDE RULE: If the input stories include LoCo-tagged items — any item whose source is @LoCoProWrestlng, @locoprowrestling, the LoCo Pro Wrestling YouTube channel, or any story with "LoCo Pro Wrestling" in the title — lead the column with them.
+
+ALWAYS-ON RULE: Name LoCo Pro Wrestling at least once in the body, even when no LoCo story appears in the input. A footer blurb is appended automatically after your output — do not repeat its contents in your prose.
+
+KAYFABE GUARDRAIL (absolute): Storyline events inside LoCo Pro Wrestling are not real news. Only treat items from the input stories as reportable facts. You may quote or paraphrase a LoCo YouTube video title as "a newly uploaded match" or "a new promo video" — but you must not assert in-universe outcomes (wins, losses, betrayals, championships, faction alignments) as real-world results unless the input story explicitly states so in a real-world voice. When in doubt, describe a LoCo input item as "a new video from LoCo Pro Wrestling" and stop there. Do not invent show dates, results, or roster moves.
+
+## LoCo voice, roster, and lore
+
+${voiceDoc}`;
+}
+
+export function assemblePostBody(body, type) {
+  if (type === "colorado") {
+    return `${body}${LOCO_STATIC_BLURB}`;
+  }
+  return body;
+}
 
 function buildPrompt(stories) {
   const storyList = stories
@@ -101,7 +136,7 @@ async function callOpenAI(stories, type) {
     throw new Error("OPENAI_API_KEY is required to generate a post.");
   }
 
-  const systemPrompt = type === "colorado" ? COLORADO_SYSTEM_PROMPT : SYSTEM_PROMPT;
+  const systemPrompt = type === "colorado" ? buildColoradoSystemPrompt() : SYSTEM_PROMPT;
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   const response = await client.chat.completions.create({
     model: process.env.OPENAI_MODEL || "gpt-5.4",
@@ -118,10 +153,11 @@ async function callOpenAI(stories, type) {
 export async function generatePost(stories, type) {
   const now = new Date();
   const body = await callOpenAI(stories, type);
+  const assembledBody = assemblePostBody(body, type);
   const frontmatter = buildFrontmatter(stories, type, now);
   const outputPath = getPostOutputPath(type, now);
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, frontmatter + body);
+  fs.writeFileSync(outputPath, frontmatter + assembledBody);
   console.log(`Generated post: ${outputPath}`);
   return outputPath;
 }

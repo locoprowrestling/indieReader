@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  LOCO_STATIC_BLURB,
+  assemblePostBody,
+  buildColoradoSystemPrompt,
   buildFrontmatter,
   formatDenverDate,
   getEditionTime,
@@ -42,5 +45,54 @@ describe("buildFrontmatter", () => {
     expect(frontmatter).toContain('date: "2026-04-16"');
     expect(frontmatter).toContain('time: "19:00"');
     expect(getPostOutputPath("evening", now)).toMatch(/2026-04-16-evening\.md$/);
+  });
+});
+
+describe("assemblePostBody", () => {
+  it("appends the LoCo static blurb to Colorado posts", () => {
+    const body = "An editorial body.";
+    const result = assemblePostBody(body, "colorado");
+
+    expect(result.startsWith(body)).toBe(true);
+    expect(result).toContain("LoCo Pro Wrestling");
+    expect(result).toContain("locopro.pw");
+    expect(result.endsWith(LOCO_STATIC_BLURB)).toBe(true);
+  });
+
+  it("returns body unchanged for morning edition", () => {
+    const body = "A morning editorial.";
+    expect(assemblePostBody(body, "morning")).toBe(body);
+  });
+
+  it("returns body unchanged for evening edition", () => {
+    const body = "An evening editorial.";
+    expect(assemblePostBody(body, "evening")).toBe(body);
+  });
+});
+
+describe("buildColoradoSystemPrompt", () => {
+  it("includes LoCo-aligned identity, the kayfabe guardrail, and the voice doc", () => {
+    const prompt = buildColoradoSystemPrompt();
+
+    expect(prompt).toContain("LoCo Pro Wrestling");
+    expect(prompt).toContain("LoCo-aligned insider");
+    expect(prompt).toContain("LEDE RULE");
+    expect(prompt).toContain("KAYFABE GUARDRAIL");
+    expect(prompt).toContain("Dickens Opera House");
+  });
+
+  it("no longer references WrestleSphere or High Plains Wrestling", () => {
+    const prompt = buildColoradoSystemPrompt();
+
+    expect(prompt).not.toContain("WrestleSphere");
+    expect(prompt).not.toContain("High Plains Wrestling");
+  });
+
+  it("inlines the voice doc content passed in", () => {
+    const stub = "STUB_VOICE_DOC_CONTENT_12345";
+    const prompt = buildColoradoSystemPrompt(stub);
+
+    expect(prompt).toContain(stub);
+    expect(prompt).toContain("## LoCo voice, roster, and lore");
   });
 });
