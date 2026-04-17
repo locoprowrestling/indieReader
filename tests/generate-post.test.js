@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { buildFrontmatter, yamlScalar } from "../scripts/generate-post.js";
+import {
+  buildFrontmatter,
+  formatDenverDate,
+  getPostOutputPath,
+  yamlScalar,
+} from "../scripts/generate-post.js";
 
 describe("yamlScalar", () => {
   it("quotes and flattens YAML-sensitive strings", () => {
@@ -24,5 +29,14 @@ describe("buildFrontmatter", () => {
     expect(frontmatter).toContain('type: "morning"');
     expect(frontmatter).toContain('url: "https://example.com/story?quote=\\"yes\\""');
     expect(frontmatter).toContain('title: "A title: with break"');
+  });
+
+  it("uses the Denver local date after UTC midnight", () => {
+    const now = new Date("2026-04-17T01:30:00Z");
+    const frontmatter = buildFrontmatter([], "evening", now);
+
+    expect(formatDenverDate(now)).toBe("2026-04-16");
+    expect(frontmatter).toContain('date: "2026-04-16"');
+    expect(getPostOutputPath("evening", now)).toMatch(/2026-04-16-evening\.md$/);
   });
 });

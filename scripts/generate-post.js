@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import OpenAI from "openai";
 
+const DENVER_TIME_ZONE = "America/Denver";
 const SYSTEM_PROMPT = `You are an indie wrestling enthusiast writing an editorial column for indieReader, a news site dedicated to independent professional wrestling.
 
 Write flowing narrative prose in Markdown. Do not output bullets, frontmatter, or a title. Start with a strong opening sentence.
@@ -28,13 +29,33 @@ export function yamlScalar(value) {
   return JSON.stringify(normalized);
 }
 
+export function formatDenverDate(now = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: DENVER_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(now);
+  const values = Object.fromEntries(
+    parts
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, part.value]),
+  );
+
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+export function getPostOutputPath(type, now = new Date()) {
+  return path.resolve(`src/content/posts/${formatDenverDate(now)}-${type}.md`);
+}
+
 export function buildFrontmatter(stories, type, now = new Date()) {
-  const date = now.toISOString().slice(0, 10);
+  const date = formatDenverDate(now);
   const time = now.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-    timeZone: "America/Denver",
+    timeZone: DENVER_TIME_ZONE,
   });
   const title =
     type === "morning"
@@ -84,11 +105,9 @@ async function callOpenAI(stories) {
 
 export async function generatePost(stories, type) {
   const now = new Date();
-  const date = now.toISOString().slice(0, 10);
   const body = await callOpenAI(stories);
   const frontmatter = buildFrontmatter(stories, type, now);
-
-  const outputPath = path.resolve(`src/content/posts/${date}-${type}.md`);
+  const outputPath = getPostOutputPath(type, now);
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, frontmatter + body);
   console.log(`Generated post: ${outputPath}`);

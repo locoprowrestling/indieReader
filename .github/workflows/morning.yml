@@ -2,8 +2,7 @@ name: Generate Morning Post
 
 on:
   schedule:
-    - cron: "0 7 * * *"
-      timezone: "America/Denver"
+    - cron: "0 13,14 * * *"
   workflow_dispatch:
 
 permissions:
@@ -17,18 +16,32 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
+      - name: Check Denver morning window
+        id: schedule
+        run: |
+          HOUR="$(TZ=America/Denver date +%H)"
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" || "$HOUR" == "07" ]]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/checkout@v4
+        if: steps.schedule.outputs.should_run == 'true'
       - uses: actions/setup-node@v4
+        if: steps.schedule.outputs.should_run == 'true'
         with:
           node-version: "20"
           cache: npm
       - run: npm ci
+        if: steps.schedule.outputs.should_run == 'true'
       - name: Generate morning blog post
+        if: steps.schedule.outputs.should_run == 'true'
         run: node scripts/run-generate.js morning
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
       - name: Commit post and updated state
+        if: steps.schedule.outputs.should_run == 'true'
         run: |
           git config user.name "indieReader Bot"
           git config user.email "noreply@indiereader"
