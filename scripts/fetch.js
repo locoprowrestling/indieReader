@@ -10,6 +10,7 @@ import {
   fetchTwitter,
   fetchYouTube,
 } from "./fetch-social.js";
+import { fetchTikTok } from "./fetch-tiktok.js";
 import { filterStories } from "./filter.js";
 import { readJsonFileIfExists } from "./json-file.js";
 import { incrementStoriesCount } from "./state.js";
@@ -36,13 +37,14 @@ async function main() {
   const existingIds = existingStories.map((story) => story.id);
   const rawStories = [];
 
-  for (const url of config.rss) {
+  for (const feedConfig of config.rss) {
+    const feedUrl = typeof feedConfig === "string" ? feedConfig : feedConfig.url;
     try {
-      const stories = await fetchRSSFeed(url);
+      const stories = await fetchRSSFeed(feedConfig);
       rawStories.push(...stories);
-      console.log(`[RSS] ${url}: ${stories.length} items`);
+      console.log(`[RSS] ${feedUrl}: ${stories.length} items`);
     } catch (error) {
-      console.warn(`[RSS] Failed ${url}: ${error.message}`);
+      console.warn(`[RSS] Failed ${feedUrl}: ${error.message}`);
     }
   }
 
@@ -62,6 +64,7 @@ async function main() {
     ["YouTube", fetchYouTube, social.youtube || []],
     ["Facebook", fetchFacebook, social.facebook || []],
     ["Instagram", fetchInstagram, social.instagram || []],
+    ["TikTok", fetchTikTok, social.tiktok || []],
   ]) {
     try {
       rawStories.push(...(await fetcher(targets)));

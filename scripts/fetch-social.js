@@ -5,16 +5,18 @@ function getErrorMessage(error) {
 }
 
 async function settleStories(items, label, fetchStories) {
-  const settled = await Promise.allSettled(items.map((item) => fetchStories(item)));
+  const normalized = items.map((item) => (typeof item === "string" ? { id: item, region: null } : item));
+  const settled = await Promise.allSettled(normalized.map((entry) => fetchStories(entry.id)));
   const stories = [];
 
   settled.forEach((result, index) => {
     if (result.status === "fulfilled") {
-      stories.push(...result.value);
+      const region = normalized[index].region ?? null;
+      stories.push(...result.value.map((s) => ({ ...s, region })));
       return;
     }
 
-    console.warn(`[fetch-social] ${label} failed for ${items[index]}: ${getErrorMessage(result.reason)}`);
+    console.warn(`[fetch-social] ${label} failed for ${normalized[index].id}: ${getErrorMessage(result.reason)}`);
   });
 
   return stories;

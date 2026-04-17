@@ -11,6 +11,14 @@ Focus on what matters to indie wrestling fans: talent movement, promotion moment
 
 Do not discuss WWE, AEW, TNA, ROH, or NJPW unless a story explicitly involves their direct impact on the indie scene.`;
 
+const COLORADO_SYSTEM_PROMPT = `You are a Colorado indie wrestling enthusiast writing a regional column for indieReader, covering the local pro wrestling scene along the Front Range and across the state.
+
+Write flowing narrative prose in Markdown. Do not output bullets, frontmatter, or a title. Start with a strong opening sentence.
+
+Focus on what matters to Colorado fans: upcoming shows, local promotions (Rocky Mountain Pro, Primos Premier Wrestling, WrestleSphere, High Plains Wrestling, and others), talent working the CO scene, venue announcements, and results. Treat upcoming event listings as legitimate news worth covering.
+
+Write with the enthusiasm of someone who drives two hours to see a show in a high school gym.`;
+
 function buildPrompt(stories) {
   const storyList = stories
     .map(
@@ -50,16 +58,20 @@ export function getPostOutputPath(type, now = new Date()) {
 }
 
 export function getEditionTime(type) {
-  return type === "morning" ? "07:00" : "19:00";
+  if (type === "morning") return "07:00";
+  if (type === "colorado") return "12:00";
+  return "19:00";
 }
 
 export function buildFrontmatter(stories, type, now = new Date()) {
   const date = formatDenverDate(now);
   const time = getEditionTime(type);
-  const title =
-    type === "morning"
-      ? "Indie Wrestling Roundup - Morning Edition"
-      : "Indie Wrestling Roundup - Evening Edition";
+  const titleMap = {
+    morning: "Indie Wrestling Roundup - Morning Edition",
+    evening: "Indie Wrestling Roundup - Evening Edition",
+    colorado: "Colorado Indie Wrestling Roundup",
+  };
+  const title = titleMap[type] ?? "Indie Wrestling Roundup";
   const sourcesYaml =
     stories.length === 0
       ? "  []"
@@ -84,17 +96,18 @@ ${sourcesYaml}
 `;
 }
 
-async function callOpenAI(stories) {
+async function callOpenAI(stories, type) {
   if (!process.env.OPENAI_API_KEY) {
     throw new Error("OPENAI_API_KEY is required to generate a post.");
   }
 
+  const systemPrompt = type === "colorado" ? COLORADO_SYSTEM_PROMPT : SYSTEM_PROMPT;
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   const response = await client.chat.completions.create({
     model: process.env.OPENAI_MODEL || "gpt-5.4",
     max_completion_tokens: 2048,
     messages: [
-      { role: "system", content: SYSTEM_PROMPT },
+      { role: "system", content: systemPrompt },
       { role: "user", content: buildPrompt(stories) },
     ],
   });
@@ -104,7 +117,7 @@ async function callOpenAI(stories) {
 
 export async function generatePost(stories, type) {
   const now = new Date();
-  const body = await callOpenAI(stories);
+  const body = await callOpenAI(stories, type);
   const frontmatter = buildFrontmatter(stories, type, now);
   const outputPath = getPostOutputPath(type, now);
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });

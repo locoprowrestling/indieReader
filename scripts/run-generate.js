@@ -3,12 +3,13 @@ import path from "node:path";
 import { readConfig } from "./config.js";
 import { generatePost } from "./generate-post.js";
 import { readJsonFile } from "./json-file.js";
+import { filterStoriesByRegion } from "./filter.js";
 import { readState, resetAfterPost, setCarryOver } from "./state.js";
 
 const type = process.argv[2];
 
-if (!["morning", "evening"].includes(type)) {
-  console.error("Usage: node scripts/run-generate.js morning|evening");
+if (!["morning", "evening", "colorado"].includes(type)) {
+  console.error("Usage: node scripts/run-generate.js morning|evening|colorado");
   process.exit(1);
 }
 
@@ -42,7 +43,18 @@ function gatherStoriesSinceLastPost(lastPostTime) {
 async function main() {
   const config = readConfig();
   const state = readState();
-  const stories = gatherStoriesSinceLastPost(state.last_post_time);
+  // Colorado edition is not gated by last_post_time — freshness is handled by
+  // filterStoriesByRegion's 90-day window. National editions still use the cutoff
+  // to avoid reprinting the same stories across morning and evening.
+  const allStories = gatherStoriesSinceLastPost(type === "colorado" ? null : state.last_post_time);
+
+  let stories;
+  if (type === "colorado") {
+    stories = filterStoriesByRegion(allStories, "CO", config);
+  } else {
+    // Exclude region-tagged stories from the national morning/evening editions.
+    stories = allStories.filter((s) => !s.region);
+  }
 
   console.log(`[run-generate] type=${type} stories=${stories.length}`);
 
@@ -54,6 +66,7 @@ async function main() {
   // Morning editions intentionally publish whenever there is at least one story.
   // The minimum threshold only applies to the second daily edition so the evening
   // run does not publish a thin recap and instead carries stories forward.
+  // Colorado editions have no minimum — even a single upcoming show is worth covering.
   if (type === "evening" && stories.length < config.min_stories_for_post) {
     console.log(
       `Not enough stories for an evening post (${stories.length}/${config.min_stories_for_post}).`,
@@ -63,7 +76,9 @@ async function main() {
   }
 
   await generatePost(stories, type);
-  resetAfterPost(new Date().toISOString());
+  if (type !== "colorado") {
+    resetAfterPost(new Date().toISOString());
+  }
 }
 
 main().catch((error) => {

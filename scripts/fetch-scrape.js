@@ -52,6 +52,7 @@ export function parseCagematchHTML(html, scrapeConfig) {
       source: scrapeConfig.name,
       published_at: parsePublishedAt(root) || new Date().toISOString(),
       platform: "scrape",
+      region: scrapeConfig.region ?? null,
     });
   });
 

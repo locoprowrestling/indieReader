@@ -1,8 +1,10 @@
 {
   "rss": [
-    "https://feeds.feedburner.com/pwinsider",
-    "https://www.fightful.com/feed/",
-    "https://www.f4wonline.com/feed/"
+    { "url": "https://feeds.feedburner.com/pwinsider", "region": null },
+    { "url": "https://www.fightful.com/feed/", "region": null },
+    { "url": "https://www.f4wonline.com/feed/", "region": null },
+    { "url": "https://news.google.com/rss/search?q=%22pro+wrestling%22+colorado&hl=en-US&gl=US&ceid=US:en", "region": "CO" },
+    { "url": "https://bpwlive.com/bpwlive?format=rss", "region": "CO" }
   ],
   "scrape": [
     {
@@ -12,14 +14,31 @@
       "titleSelector": ".news-title a",
       "summarySelector": ".news-text",
       "linkSelector": ".news-title a",
-      "baseUrl": "https://www.cagematch.net"
+      "baseUrl": "https://www.cagematch.net",
+      "region": null
     }
   ],
   "social_allowlist": {
-    "twitter": [],
-    "youtube": [],
+    "twitter": [
+      { "id": "@rmpwrestling",    "region": "CO" },
+      { "id": "@primoswrestling", "region": "CO" },
+      { "id": "@OfficialCWC719", "region": "CO" },
+      { "id": "@csw_719",         "region": "CO" },
+      { "id": "@respectwomensw1", "region": "CO" },
+      { "id": "@LoCoProWrestlng", "region": "CO" }
+    ],
+    "youtube": [
+      { "id": "UCpkZA8PSJtH437GP7N9_QxA", "region": "CO" }
+    ],
     "facebook": [],
-    "instagram": []
+    "instagram": [],
+    "tiktok": [
+      { "id": "@rmpwrestling",      "region": "CO" },
+      { "id": "@primosprowrestling", "region": "CO" },
+      { "id": "@battlegroundpro",   "region": "CO" },
+      { "id": "@locoprowrestling",   "region": "CO" },
+      { "id": "@rwwdenver",          "region": "CO" }
+    ]
   },
   "blocklist": [
     "WWE",

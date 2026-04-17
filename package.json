@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "fetch": "node scripts/fetch.js",
-    "generate": "node scripts/run-generate.js"
+    "generate": "node scripts/run-generate.js",
+    "generate:colorado": "node scripts/run-generate.js colorado"
   },
   "dependencies": {
     "astro": "^4.0.0",

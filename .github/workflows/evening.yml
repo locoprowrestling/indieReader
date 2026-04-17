@@ -47,3 +47,18 @@ jobs:
           git config user.email "noreply@indiereader"
           git add src/content/posts/ data/state.json
           git diff --staged --quiet || (git commit -m "feat: evening post or carry-over $(date -u +%Y-%m-%d)" && git push)
+      - name: Tweet new post
+        if: steps.schedule.outputs.should_run == 'true'
+        run: |
+          if git diff HEAD~1 --name-only | grep src/content/posts; then
+            POST_PATH="src/content/posts/$(TZ=America/Denver date +%Y-%m-%d)-evening.md"
+            node scripts/post-tweet.js "$POST_PATH"
+          else
+            echo "No new post committed — skipping tweet."
+          fi
+        env:
+          TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
+          TWITTER_SECRET_KEY: ${{ secrets.TWITTER_SECRET_KEY }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+          SITE_URL: ${{ vars.SITE_URL }}
