@@ -427,6 +427,13 @@ const homeUrl = import.meta.env.BASE_URL;
         color: rgba(255, 255, 255, 0.76);
       }
 
+      :root[data-theme="dark"] .page-hero--dark {
+        background:
+          radial-gradient(circle at top center, rgba(74, 168, 255, 0.22), transparent 28%),
+          linear-gradient(180deg, #1b2535 0%, #141c29 100%);
+        border-color: rgba(255, 255, 255, 0.10);
+      }
+
       .eyebrow {
         margin: 0;
         color: var(--accent-link);
@@ -520,6 +527,11 @@ const homeUrl = import.meta.env.BASE_URL;
       .section-card--dark .section-kicker,
       .section-card--dark .section-meta {
         color: rgba(255, 255, 255, 0.72);
+      }
+
+      :root[data-theme="dark"] .section-card--dark {
+        background: linear-gradient(180deg, #1b2535 0%, #141c29 100%);
+        border-color: rgba(255, 255, 255, 0.10);
       }
 
       .section-header {

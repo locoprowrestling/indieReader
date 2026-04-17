@@ -71,6 +71,13 @@ function platformLabel(platform: string) {
     max-width: 48rem;
   }
 
+  :root[data-theme="dark"] .story--featured {
+    background:
+      radial-gradient(circle at top right, rgba(74, 168, 255, 0.28), transparent 28%),
+      linear-gradient(180deg, #1b2535 0%, #141c29 100%);
+    border-color: rgba(255, 255, 255, 0.10);
+  }
+
   .story:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-hover);
