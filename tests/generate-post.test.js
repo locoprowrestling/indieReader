@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildFrontmatter,
   formatDenverDate,
+  getEditionTime,
   getPostOutputPath,
   yamlScalar,
 } from "../scripts/generate-post.js";
@@ -27,6 +28,7 @@ describe("buildFrontmatter", () => {
 
     expect(frontmatter).toContain('title: "Indie Wrestling Roundup - Morning Edition"');
     expect(frontmatter).toContain('type: "morning"');
+    expect(frontmatter).toContain('time: "07:00"');
     expect(frontmatter).toContain('url: "https://example.com/story?quote=\\"yes\\""');
     expect(frontmatter).toContain('title: "A title: with break"');
   });
@@ -36,7 +38,9 @@ describe("buildFrontmatter", () => {
     const frontmatter = buildFrontmatter([], "evening", now);
 
     expect(formatDenverDate(now)).toBe("2026-04-16");
+    expect(getEditionTime("evening")).toBe("19:00");
     expect(frontmatter).toContain('date: "2026-04-16"');
+    expect(frontmatter).toContain('time: "19:00"');
     expect(getPostOutputPath("evening", now)).toMatch(/2026-04-16-evening\.md$/);
   });
 });

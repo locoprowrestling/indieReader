@@ -49,14 +49,13 @@ export function getPostOutputPath(type, now = new Date()) {
   return path.resolve(`src/content/posts/${formatDenverDate(now)}-${type}.md`);
 }
 
+export function getEditionTime(type) {
+  return type === "morning" ? "07:00" : "19:00";
+}
+
 export function buildFrontmatter(stories, type, now = new Date()) {
   const date = formatDenverDate(now);
-  const time = now.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: DENVER_TIME_ZONE,
-  });
+  const time = getEditionTime(type);
   const title =
     type === "morning"
       ? "Indie Wrestling Roundup - Morning Edition"
@@ -93,7 +92,7 @@ async function callOpenAI(stories) {
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   const response = await client.chat.completions.create({
     model: process.env.OPENAI_MODEL || "gpt-5.4",
-    max_tokens: 2048,
+    max_completion_tokens: 2048,
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: buildPrompt(stories) },
