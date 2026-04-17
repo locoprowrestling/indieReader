@@ -11,7 +11,7 @@ posts.sort((a, b) => {
     return dateDiff;
   }
 
-  return a.data.type === "morning" ? 1 : -1;
+  return a.data.time < b.data.time ? 1 : -1;
 });
 
 const latest = posts[0];

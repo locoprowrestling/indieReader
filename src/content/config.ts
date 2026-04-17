@@ -6,7 +6,7 @@ const posts = defineCollection({
     title: z.string(),
     date: z.coerce.date(),
     time: z.string(),
-    type: z.enum(["morning", "evening"]),
+    type: z.enum(["morning", "evening", "colorado"]),
     story_count: z.number(),
     ai_provider: z.string(),
     sources: z.array(

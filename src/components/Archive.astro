@@ -82,6 +82,10 @@ const dates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
     background: var(--surface-dark-2);
   }
 
+  .archive-dot.colorado {
+    background: #4a7c59;
+  }
+
   .archive-title {
     font-weight: 600;
     letter-spacing: -0.02em;
@@ -121,12 +125,7 @@ const dates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
             })}
           </h3>
           {grouped[dateKey]
-            .sort((a, b) => {
-              if (a.data.type === b.data.type) {
-                return 0;
-              }
-              return a.data.type === "morning" ? -1 : 1;
-            })
+            .sort((a, b) => a.data.time < b.data.time ? -1 : 1)
             .map((post) => (
               <a class="archive-link" href={withBase(`/posts/${post.slug}/`)}>
                 <span class={`archive-dot ${post.data.type}`}></span>

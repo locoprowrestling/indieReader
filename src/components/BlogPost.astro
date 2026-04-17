@@ -3,7 +3,7 @@ interface Props {
   title: string;
   date: Date;
   time: string;
-  type: "morning" | "evening";
+  type: "morning" | "evening" | "colorado";
   story_count: number;
 }
 
@@ -20,7 +20,10 @@ const dateLabel = displayDate.toLocaleDateString("en-US", {
   timeZone: "America/Denver",
 });
 
-const editionLabel = type === "morning" ? "Morning Edition" : "Evening Edition";
+const editionLabel =
+  type === "morning" ? "Morning Edition"
+  : type === "colorado" ? "Colorado Edition"
+  : "Evening Edition";
 ---
 
 <style>
