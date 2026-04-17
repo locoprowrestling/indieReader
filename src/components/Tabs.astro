@@ -10,6 +10,6 @@ const { active } = Astro.props;
 
 <nav class="tabs" aria-label="Primary">
   <a href={withBase("/")} class={active === "news" ? "active" : undefined}>News</a>
-  <a href={withBase("/blog/")} class={active === "blog" ? "active" : undefined}>Blog Post</a>
+  <a href={withBase("/blog/")} class={active === "blog" ? "active" : undefined}>Current Post</a>
   <a href={withBase("/archive/")} class={active === "archive" ? "active" : undefined}>Archive</a>
 </nav>
