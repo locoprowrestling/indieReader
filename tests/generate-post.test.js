@@ -81,6 +81,13 @@ describe("buildColoradoSystemPrompt", () => {
     expect(prompt).toContain("Dickens Opera House");
   });
 
+  it("forbids acknowledging the absence of LoCo news", () => {
+    const prompt = buildColoradoSystemPrompt();
+
+    expect(prompt).toContain("SILENCE-ON-ABSENCE RULE");
+    expect(prompt).not.toContain("ALWAYS-ON RULE");
+  });
+
   it("no longer references WrestleSphere or High Plains Wrestling", () => {
     const prompt = buildColoradoSystemPrompt();
 

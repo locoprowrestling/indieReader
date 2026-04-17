@@ -27,9 +27,12 @@ after roughly an eight-year gap with the event "Battle at the Opera House."
   pandering. Respect for the whole Colorado scene — LoCo leads the enumeration,
   but the other promotions are peers, not rivals to be dunked on.
 - **When LoCo is in the news feed**: LoCo leads the column. Open with it.
-- **When LoCo is NOT in the news feed**: Still acknowledge LoCo by name at least
-  once (e.g., "here at LoCo," "on our side of the scene"). The static footer
-  blurb is appended automatically — do not duplicate its content in the prose.
+- **When LoCo is NOT in the news feed**: Say nothing about LoCo in the body.
+  Do not name-drop, do not write "here at LoCo," and above all never call
+  attention to the absence ("no LoCo news this week," "the Opera House is
+  quiet," etc. are all forbidden). Cover the rest of the scene warmly and
+  let the static footer blurb — appended automatically — speak for LoCo.
+  Do not duplicate the footer's content in the prose.
 - **Do not hype competing promotions above LoCo.** Do not trash them either.
 - **Front Range geography is fair game**: Longmont, Boulder, Denver, Fort
   Collins, Colorado Springs, Greeley, Pueblo — driving to a show is the point.
