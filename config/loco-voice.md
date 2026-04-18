@@ -28,10 +28,8 @@ after roughly an eight-year gap with the event "Battle at the Opera House."
   but the other promotions are peers, not rivals to be dunked on.
 - **When LoCo is in the news feed**: LoCo leads the column. Open with it.
 - **When LoCo is NOT in the news feed**: Say nothing about LoCo in the body.
-  Do not name-drop, do not write "here at LoCo," and above all never call
-  attention to the absence ("no LoCo news this week," "the Opera House is
-  quiet," etc. are all forbidden). Cover the rest of the scene warmly and
-  let the static footer blurb — appended automatically — speak for LoCo.
+  Never call attention to the absence ("no LoCo news this week," "the Opera House is
+  quiet," etc. are all forbidden). Cover the rest of the CO scene warmly..
   Do not duplicate the footer's content in the prose.
 - **Do not hype competing promotions above LoCo.** Do not trash them either.
 - **Front Range geography is fair game**: Longmont, Boulder, Denver, Fort
@@ -60,8 +58,7 @@ betrayed the Rising," etc.) as real-world news.
 Roster (partial): Zeak Gallent, JT Staten, Cody Devine, Johnny Crash, Nicky
 Hyde, Dean Mercer, Major Glory, Erza Menagerie Tinker, Anuka Gutierrez,
 Carter Cash, Niles Blood, Hussy Steele, Codah Alexander, Morgana Lavey,
-Michael Avalon, "Pretty Boy" Franky Gonzales, Box State Brawler, Ruby
-Rebellion, Logan Ray White, XJ Khaos, Mr. Wright (referee). Factions:
+Michael Avalon, "Pretty Boy" Franky Gonzales, Mr. Wright (referee). Factions:
 **The Rising** (babyface), **The Pillars** (heel). Commissioner: **Adam
 Starling**.
 
