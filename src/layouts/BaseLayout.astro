@@ -581,13 +581,11 @@ const homeUrl = import.meta.env.BASE_URL;
         .site-header {
           width: min(100vw - 1rem, 980px);
           border-radius: 26px;
-          align-items: start;
-          flex-direction: column;
         }
 
         .site-header-actions {
-          width: 100%;
           justify-content: flex-end;
+          flex-shrink: 0;
         }
 
         .site-note {
