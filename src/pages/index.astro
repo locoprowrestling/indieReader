@@ -1,49 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import NewsFeed from "../components/NewsFeed.astro";
-import Tabs from "../components/Tabs.astro";
-import { withBase } from "../lib/base";
-import { NEWS_BEGINNING_PATH, getNewsNavigation, listNewsDates, loadLatestStories } from "../lib/news";
-
-const stories = loadLatestStories();
-const dates = listNewsDates();
-const latestDate = dates[0];
-const activeDate = latestDate || new Date().toISOString().slice(0, 10);
-const pageDateLabel = new Date(`${activeDate}T12:00:00Z`).toLocaleDateString("en-US", {
-  weekday: "long",
-  month: "long",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "America/Denver",
-});
-
-const newsNav = latestDate ? getNewsNavigation(latestDate) : null;
-const previousHref =
-  newsNav?.olderDate ? withBase(`/news/${newsNav.olderDate}/`) : withBase(NEWS_BEGINNING_PATH);
+import SunsetNotice from "../components/SunsetNotice.astro";
 ---
 
-<BaseLayout title="News">
-  <Tabs active="news" />
-  <section class="page-hero">
-    <p class="eyebrow">Today in indie wrestling</p>
-    <h2 class="page-title">The indie wrestling stories worth your time.</h2>
-    <p class="page-summary">
-      Cards, partnerships, signings, and notable movement from across the scene, gathered into one place.
-    </p>
-    <div class="page-actions">
-      <a class="button-primary" href={withBase("/blog/")}>Read latest column</a>
-      <a class="button-secondary" href={withBase("/archive/")}>Browse archive</a>
-    </div>
-  </section>
-
-  <section class="section-card">
-    <div class="section-header">
-      <div>
-        <p class="section-kicker">News feed</p>
-        <h3 class="section-title">{pageDateLabel}</h3>
-      </div>
-      <a class="inline-link" href={previousHref}>View previous day</a>
-    </div>
-    <NewsFeed stories={stories} />
-  </section>
+<BaseLayout title="Sunset Notice">
+  <SunsetNotice />
 </BaseLayout>
